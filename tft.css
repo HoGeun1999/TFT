@@ -28,6 +28,7 @@ h3{
     border: 1px solid black; height: 300px; width: 550px;
     display: inline-block;
     margin-left: 350px;
+    overflow: scroll;
 }
 
 #recommendChampion{
@@ -46,3 +47,22 @@ h3{
 #nameButton{
     margin-left: 350px;
 }
+
+.champion{
+    /* border: 1px solid black;  */
+    
+    height: 50px; 
+    width: 50px;
+    /* position: absolute; */
+    display: inline;
+}
+
+/* #garen{
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+#ryze{
+    margin-left: 70px;
+    margin-top: 10px;
+} */
