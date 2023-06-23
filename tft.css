@@ -49,12 +49,23 @@ h3{
 }
 
 .champion{
-    /* border: 1px solid black;  */
+    border: 1px solid black; 
     
     height: 50px; 
     width: 50px;
-    /* position: absolute; */
-    display: inline;
+    margin-right: 10px;
+    display: inline-table;
+}
+
+.jobTab{
+    border: 1px solid black;
+    height: 30px;
+}
+
+
+.lineTab{
+    border: 1px solid black;
+    height: 30px;
 }
 
 /* #garen{
