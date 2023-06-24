@@ -2,10 +2,11 @@
     display: block; 
 }
 
-#ArrangementBox{
+#arrangementBox{
     border: 1px solid black; height: 300px; width: 700px;
     display: inline-block;
     margin-left: 350px;
+    overflow: scroll hidden;
 }
 
 #checkSynergy{
@@ -54,18 +55,33 @@ h3{
     height: 50px; 
     width: 50px;
     margin-right: 10px;
+    margin-top:10px;
+    display: inline-table;
+}
+
+.clone{
+    border: 1px solid black;  
+    height: 50px; 
+    width: 50px;
+    margin-right: 10px;
+    margin-top:10px;
     display: inline-table;
 }
 
 .jobTab{
     border: 1px solid black;
     height: 30px;
+    margin-bottom: 30px;
+    margin-top: 10px;
+    display: inline-block;
+
 }
 
 
 .lineTab{
     border: 1px solid black;
     height: 30px;
+    margin-bottom: 30px;
 }
 
 /* #garen{
