@@ -9,10 +9,12 @@
     overflow: scroll hidden;
 }
 
-#checkSynergy{
+#SynergyBox{
     border:  1px solid black; height: 300px; width: 400px; 
     display: inline-block;
     margin-left: 50px;
+    overflow: scroll hidden;
+
 }
 
 h3{

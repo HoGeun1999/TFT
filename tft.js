@@ -1,48 +1,67 @@
 import championList from './tftChampionObject.js';
-// const championDiv = {}
-const championArr = []
+const championDiv = {}
 const championBox = document.querySelector('#championBox');
 const arrangementBox = document.querySelector('#arrangementBox')
+const SynergyBox = document.querySelector('#SynergyBox')
+const SynergyCount = {}
 let jobTabCheck = 0
 let lineTabCheck = 0
 const lineBox = ['공허','그림자군도','녹서스','다르킨','데마시아','방랑자','슈리마','아이오니아','요들','자운','타곤','프렐요드','필트오버']
 const jobBox = ['구원자','기원자','난동꾼','도전자','마법사','발명의대가','백발백중','불한당','사수','여제','연쇄마법사','요새','전쟁기계','책략가','학살자']
+for(let i=0;i<championList.length;i++){
+    championDiv[championList[i].koreanName] = championList[i]
+}
 function replace(){
     for(let i=0;i<championList.length;i++){
         const champion = document.createElement('div');
         champion.id = championList[i].name;
         champion.className = 'champion';
         champion.textContent = championList[i].koreanName;
-        // champion.addEventListener("click",championClickEvent)
         champion.addEventListener("click",function(){
+            const SynergyTab = []
+            const SynergyTabCheck = []
             const championClone = document.createElement('div');
             championClone.className = 'clone';
             championClone.id = championList[i].koreanName;
             championClone.textContent = championList[i].koreanName;
             championClone.addEventListener("click",function(){
                 championClone.remove();
-            })
+                SynergyBox.replaceChildren()
+            }) 
             arrangementBox.appendChild(championClone)
             const arrangementBoxChampion = document.querySelectorAll('.clone')
-            console.log(arrangementBoxChampion,100)
-        })
-        // championDiv[championList[i].name] = champion;
-        // championArr.push([championList[i].name,championList[i].cost,championList[i].line,championList[i].job])
-        // const championBox = document.querySelector('#championBox');s
+            SynergyBox.replaceChildren()
+
+            for(let k=0; k<arrangementBoxChampion.length;k++){  
+                let cloneObject = championDiv[arrangementBoxChampion[k].id]
+                if(SynergyTabCheck.includes(cloneObject.koreanName) !== true){
+                    for(let x=0; x<cloneObject.line.length;x++){
+                        SynergyTab.push(cloneObject.line[x])  
+                    } 
+                    for(let x=0; x<cloneObject.job.length;x++){
+                        SynergyTab.push(cloneObject.job[x])
+                    }
+                    SynergyTabCheck.push(cloneObject.koreanName)
+                }
+            }
+            const SynergyCount = {}
+            SynergyTab.forEach((x) => { 
+                SynergyCount[x] = (SynergyCount[x] || 0)+1; 
+              });
+            const SynergyKeys = Object.keys(SynergyCount)
+            const SynergyDiv = document.createElement('div')
+            let SynergyText = ''
+            for(let y=0;y<SynergyKeys.length;y++){
+                SynergyText =  SynergyText + SynergyKeys[y] + ':' + SynergyCount[SynergyKeys[y]] + '\n'
+            }
+            SynergyDiv.textContent = SynergyText
+            SynergyBox.appendChild(SynergyDiv)
+        }) 
+
         championBox.appendChild(champion);
     }
 }
 
-// function championClickEvent(){
-//     const championClone = document.createElement('div');
-//     championClone.className = 'clone';
-//     championClone.id = championList[i].koreanName;
-//     championClone.textContent = championList[i].koreanName;
-//     championClone.addEventListener("click",function(){
-//         championClone.remove();
-//     })
-//     arrangementBox.appendChild(championClone)
-// }
 
 function removeChampionDiv(){
     for(let i=0;i<championList.length;i++){
@@ -187,9 +206,6 @@ function replaceByJob(){
 }
 
 replace()
-
-const arrangementBoxChampion = document.querySelectorAll('.clone')
-console.log(arrangementBoxChampion)
 
 document.getElementById("nameButton").addEventListener('click',replaceByName);
 document.getElementById("costButton").addEventListener('click',replaceByCost);
