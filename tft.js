@@ -4,6 +4,8 @@ const championBox = document.querySelector('#championBox');
 const arrangementBox = document.querySelector('#arrangementBox')
 const SynergyBox = document.querySelector('#SynergyBox')
 const SynergyCount = {}
+const SynergyTabCheck = []
+const SynergyTab = []
 let jobTabCheck = 0
 let lineTabCheck = 0
 const lineBox = ['공허','그림자군도','녹서스','다르킨','데마시아','방랑자','슈리마','아이오니아','요들','자운','타곤','프렐요드','필트오버']
@@ -11,29 +13,31 @@ const jobBox = ['구원자','기원자','난동꾼','도전자','마법사','발
 for(let i=0;i<championList.length;i++){
     championDiv[championList[i].koreanName] = championList[i]
 }
-function replace(){
-    for(let i=0;i<championList.length;i++){
-        const champion = document.createElement('div');
-        champion.id = championList[i].name;
-        champion.className = 'champion';
-        champion.textContent = championList[i].koreanName;
-        champion.addEventListener("click",function(){
-            const SynergyTab = []
-            const SynergyTabCheck = []
-            const championClone = document.createElement('div');
-            championClone.className = 'clone';
-            championClone.id = championList[i].koreanName;
-            championClone.textContent = championList[i].koreanName;
-            championClone.addEventListener("click",function(){
-                championClone.remove();
-                SynergyBox.replaceChildren()
-            }) 
-            arrangementBox.appendChild(championClone)
-            const arrangementBoxChampion = document.querySelectorAll('.clone')
+function clickEventHandler(championObject, arrangementBox) {
+    return () => {
+        const championClone = document.createElement('div');
+        championClone.className = 'clone';
+        championClone.id = championObject.koreanName;
+        championClone.textContent = championObject.koreanName;
+        arrangementBox.appendChild(championClone)
+        const arrangementBoxChampion = document.querySelectorAll('.clone')
+        championClone.addEventListener("click",function(){
+            const removeCloneObject = championDiv[championClone.id]
+            console.log(removeCloneObject)
+            // for(let i=0;i<removeCloneObject.line.length;i++){
+            //     SynergyTab.pop(removeCloneObject.line[i])
+            // }
+            // for(let j=0;j<removeCloneObject.line.length;j++){
+            //     SynergyTab.pop(removeCloneObject.job[j])
+            // } 수정 필요한 부분
+            SynergyTabCheck.pop(removeCloneObject.koreanName)
+            championClone.remove();
             SynergyBox.replaceChildren()
-
+            const arrangementBoxChampion = document.querySelectorAll('.clone')
+            console.log(arrangementBoxChampion)
+            console.log(SynergyTab,SynergyTabCheck)
             for(let k=0; k<arrangementBoxChampion.length;k++){  
-                let cloneObject = championDiv[arrangementBoxChampion[k].id]
+                const cloneObject = championDiv[arrangementBoxChampion[k].id]
                 if(SynergyTabCheck.includes(cloneObject.koreanName) !== true){
                     for(let x=0; x<cloneObject.line.length;x++){
                         SynergyTab.push(cloneObject.line[x])  
@@ -58,10 +62,47 @@ function replace(){
             SynergyBox.appendChild(SynergyDiv)
         }) 
 
-        championBox.appendChild(champion);
+
+        SynergyBox.replaceChildren()
+
+        for(let k=0; k<arrangementBoxChampion.length;k++){  
+            let cloneObject = championDiv[arrangementBoxChampion[k].id]
+            if(SynergyTabCheck.includes(cloneObject.koreanName) !== true){
+                for(let x=0; x<cloneObject.line.length;x++){
+                    SynergyTab.push(cloneObject.line[x])  
+                } 
+                for(let x=0; x<cloneObject.job.length;x++){
+                    SynergyTab.push(cloneObject.job[x])
+                }
+                SynergyTabCheck.push(cloneObject.koreanName)
+            }
+        }
+        const SynergyCount = {}
+        SynergyTab.forEach((x) => { 
+            SynergyCount[x] = (SynergyCount[x] || 0)+1; 
+          });
+        const SynergyKeys = Object.keys(SynergyCount)
+        const SynergyDiv = document.createElement('div')
+        let SynergyText = ''
+        for(let y=0;y<SynergyKeys.length;y++){
+            SynergyText =  SynergyText + SynergyKeys[y] + ':' + SynergyCount[SynergyKeys[y]] + '\n'
+        }
+        SynergyDiv.textContent = SynergyText
+        SynergyBox.appendChild(SynergyDiv)
     }
 }
 
+
+function replace(){
+    for(let i=0;i<championList.length;i++){
+        const champion = document.createElement('div');
+        champion.id = championList[i].name;
+        champion.className = 'champion';
+        champion.textContent = championList[i].koreanName;
+        champion.addEventListener("click",clickEventHandler(championList[i], arrangementBox))
+        championBox.appendChild(champion);
+    }
+}
 
 function removeChampionDiv(){
     for(let i=0;i<championList.length;i++){
@@ -149,16 +190,7 @@ function replaceByLine(){
             champion.id = championList[i].name;
             champion.className = 'champion';
             champion.textContent = championList[i].koreanName; 
-            champion.addEventListener("click",function(){
-                const championClone = document.createElement('div');
-                championClone.className = 'clone';
-                championClone.id = championList[i].koreanName;
-                championClone.textContent = championList[i].koreanName;
-                championClone.addEventListener("click",function(){
-                    championClone.remove();
-                })
-                arrangementBox.appendChild(championClone)
-            })  
+            champion.addEventListener("click",clickEventHandler(championList[i], arrangementBox)) 
             const lineTabDiv = document.getElementById(championList[i].line[j])
             lineTabDiv.appendChild(champion);  
         }
@@ -187,18 +219,9 @@ function replaceByJob(){
         for(let j=0;j<championList[i].job.length;j++){
             const champion = document.createElement('div');
             champion.id = championList[i].name;
-            champion.className = 'champion';
+            champion.className = 'champion';  
             champion.textContent = championList[i].koreanName; 
-            champion.addEventListener("click",function(){
-                const championClone = document.createElement('div');
-                championClone.className = 'clone';
-                championClone.id = championList[i].koreanName;
-                championClone.textContent = championList[i].koreanName;
-                championClone.addEventListener("click",function(){
-                    championClone.remove();
-                })
-                arrangementBox.appendChild(championClone)
-            })
+            champion.addEventListener("click",clickEventHandler(championList[i], arrangementBox))
             const jobTabDiv = document.getElementById(championList[i].job[j])
             jobTabDiv.appendChild(champion);  
         }
