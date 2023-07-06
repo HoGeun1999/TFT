@@ -2,51 +2,48 @@
 
 <head>
     <title>tft</title>
-    <link rel = "stylesheet" href= "tft.css">
+    <link rel="stylesheet" href="tft.css">
 
 </head>
 
 
 <body>
-    <h3>
+    <!-- <h3>
         배치칸
-    </h3>
-    <div id = 'top'>
-        <div id = 'arrangementBox'>
+    </h3> -->
+    <div id='wrap'>
+        <div id='arrangementBox'>
         </div>
 
-        <div id = 'SynergyBox'>
+        <div id='SynergyBox'>
         </div>
-    </div>
+        <div id='championBoxWrap'>
+            <button id='nameButton' class='tab'>
+                이름
+            </button>
+            <button id='costButton' class='tab'>
+                가격
+            </button>
+            <button id='lineButton' class='tab'>
+                계열
+            </button>
+            <button id='jobButton' class='tab'>
+                직업
+            </button>
 
-    <button id = 'nameButton' class = 'tab'>
-        이름
-    </button>
-    <button id = 'costButton' class = 'tab'>
-        가격
-    </button>
-    <button id = 'lineButton' class = 'tab'>
-        계열
-    </button>
-    <button id = 'jobButton' class = 'tab'>
-        직업
-    </button>
+            <div id='championBox'>
+                <!-- <div class = 'jobTab' id = '공허'>공허</div> -->
 
-    <div id = 'bottom'>
-        <div id = 'championBox'>
-            <!-- <div class = 'jobTab' id = '공허'>공허</div> -->
-
-            <!-- <div class = 'champion' id = 'garen'>garen</div>
+                <!-- <div class = 'champion' id = 'garen'>garen</div>
             <div class = 'champion' id = 'ryze'>ryze</div> -->
-        </div> 
-
-        <div id = 'recommendChampion'>
+            </div>
+        </div>
+        <div id='recommendChampion'>
         </div>
     </div>
-   
 
-    <script type = "module" src = "tft.js"></script>
-    <script type = "module" src = "tftChampionObject.js"></script>
+    <script type="module" src="tft.js"></script>
+    <script type="module" src="tftChampionObject.js"></script>
 
 </body>
 

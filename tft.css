@@ -1,75 +1,87 @@
-#top{
-    display: block; 
+body{
+    display: flex;
+    justify-content: center;
 }
 
-#arrangementBox{
-    border: 1px solid black; height: 300px; width: 700px;
-    display: inline-block;
-    margin-left: 350px;
+
+#wrap {
+    display: grid;
+    width: 1310px;
+    height: 800px;
+    grid-template-areas:
+        "arrangementBox SynergyBox"
+        "championBoxWrap recommendChampion";
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 710px 560px;
+    align-items: center;
+}
+
+#arrangementBox {
+    grid-area: arrangementBox;
+    border: 1px solid black;
+    height: 300px;
+    width: 700px;
     overflow: scroll hidden;
+    justify-self: start;
 }
 
-#SynergyBox{
-    border:  1px solid black; height: 300px; width: 400px; 
-    display: inline-block;
-    margin-left: 50px;
+#SynergyBox {
+    grid-area: SynergyBox;
+    border: 1px solid black;
+    height: 300px;
+    width: 400px;
     overflow: scroll hidden;
+    justify-self: end;
 }
 
-h3{
-    margin-left: 350px;
-    margin-top: 50px;
+
+#championBoxWrap {
+    grid-area: championBoxWrap;
+    justify-self: start;
 }
 
-#bottom{
-    display: block; 
-    /* margin-top: 100px; */
-}
-
-#championBox{
-    border: 1px solid black; height: 300px; width: 550px;
-    display: inline-block;
-    margin-left: 350px;
+#championBox {
+    border: 1px solid black;
+    height: 300px;
+    width: 550px;
     overflow: scroll;
+    
+    
 }
 
-#recommendChampion{
-    border:  1px solid black; height: 300px; width: 550px; 
-    display: inline-block;
-    margin-left: 50px;
+#recommendChampion {
+    grid-area: recommendChampion;
+    border: 1px solid black;
+    height: 300px;
+    width: 550px;
+    justify-self: end;
 }
 
-.tab{
-    margin-top: 30px;
-    margin-bottom: 5px;
+.tab {
     width: 130px;
     height: 30px;
 }
 
-#nameButton{
-    margin-left: 350px;
-}
+.champion {
+    border: 1px solid black;
 
-.champion{
-    border: 1px solid black; 
-    
-    height: 50px; 
+    height: 50px;
     width: 50px;
     margin-right: 10px;
-    margin-top:10px;
+    margin-top: 10px;
     display: inline-table;
 }
 
-.clone{
-    border: 1px solid black;  
-    height: 50px; 
+.clone {
+    border: 1px solid black;
+    height: 50px;
     width: 50px;
     margin-right: 10px;
-    margin-top:10px;
+    margin-top: 10px;
     display: inline-table;
 }
 
-.jobTab{
+.jobTab {
     border: 1px solid black;
     height: 30px;
     margin-bottom: 30px;
@@ -79,7 +91,7 @@ h3{
 }
 
 
-.lineTab{
+.lineTab {
     border: 1px solid black;
     height: 30px;
     margin-bottom: 30px;
