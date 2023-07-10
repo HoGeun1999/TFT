@@ -3,34 +3,47 @@ const championDic = {}
 const championBox = document.querySelector('#championBox');
 const arrangementBox = document.querySelector('#arrangementBox')
 const SynergyBox = document.querySelector('#SynergyBox')
-const SynergyTabCheck = {}
-const SynergyTab = {}
-let jobTabCheck = 0
-let lineTabCheck = 0
+let SynergyTabCheck = {}
+let SynergyTab = {}
 const lineBox = ['공허', '그림자군도', '녹서스', '다르킨', '데마시아', '방랑자', '슈리마', '아이오니아', '요들', '자운', '타곤', '프렐요드', '필트오버']
 const jobBox = ['구원자', '기원자', '난동꾼', '도전자', '마법사', '발명의대가', '백발백중', '불한당', '사수', '여제', '연쇄마법사', '요새', '전쟁기계', '책략가', '학살자']
+let arrangementData = [];
 for (let i = 0; i < championList.length; i++) {
     championDic[championList[i].koreanName] = championList[i]
 }
-
-const arrangementData = [];
+let uniqueIdentifier = 0
+function SynergyTabCheckReset(){
+    for(let i = 0; i < championList.length; i++){
+        SynergyTabCheck[championList[i].koreanName] = 0
+    }
+}
 
 function onClickArrangementBoxChampionClone(championObject) {
     return () => {
-        // update DATA
-        console.log(arrangementData )
+        console.log(arrangementData)
+        
         // arrangementData 에서 champion Object에 해당하는 것을 지운다. 
-        // TODO(geunho): write down
-
-        for (let x = 0; x < championObject.line.length; x++)
-            SynergyTab[championObject.line[x]] = SynergyTab[championObject.line[x]] - 1
-        for (let x = 0; x < championObject.job.length; x++)
-            SynergyTab[championObject.job[x]] = SynergyTab[championObject.job[x]] - 1
-        SynergyTabCheck[championObject.koreanName] = 0
-
-
+        // TODO(geunho): write down  << 이렇게 하면 arrangementData를 처음부터 돌면서 먼저 나오는 championObject를 삭제함..
+        for (let i = 0; i < arrangementData.length; i++) {
+            if (arrangementData[i][0].name === championObject[0].name && arrangementData[i][1] === championObject[1]) {
+                arrangementData.splice(i, 1);
+                i--;
+                break
+            }
+        }
+        if(SynergyTabCheck[championObject[0].koreanName] === 1){
+            for (let x = 0; x < championObject[0].line.length; x++)
+                if (SynergyTab[championObject[0].line[x]] !== 0)
+                    SynergyTab[championObject[0].line[x]] = SynergyTab[championObject[0].line[x]] - 1
+            for (let x = 0; x < championObject[0].job.length; x++)
+                if (SynergyTab[championObject[0].job[x]] !== 0)
+                    SynergyTab[championObject[0].job[x]] = SynergyTab[championObject[0].job[x]] - 1
+            
+        }
+        SynergyTabCheck[championObject[0].koreanName] = SynergyTabCheck[championObject[0].koreanName] - 1
         renderArrangementBoxUI(arrangementData);
-        renderSynergyBoxUI(SynergyTab);           
+        renderSynergyBoxUI(SynergyTab);
+        console.log(SynergyTabCheck)
     }
 }
 
@@ -39,8 +52,8 @@ function renderArrangementBoxUI(arrangementData) {
     for (const championObject of arrangementData) {
         const championClone = document.createElement('div');
         championClone.className = 'clone';
-        championClone.id = championObject.koreanName;
-        championClone.textContent = championObject.koreanName;
+        championClone.id = championObject[0].koreanName;
+        championClone.textContent = championObject[0].koreanName;
         championClone.addEventListener("click", onClickArrangementBoxChampionClone(championObject));
 
         arrangementBox.appendChild(championClone);
@@ -50,42 +63,48 @@ function renderArrangementBoxUI(arrangementData) {
 
 function renderSynergyBoxUI(SynergyTab) {
     const SynergyKeys = Object.keys(SynergyTab)
-    const SynergyDiv = document.createElement('div')
     SynergyBox.replaceChildren()
-    let SynergyText = ''
+    const lineBreak = document.createComment('br')
     for (let y = 0; y < SynergyKeys.length; y++) {
+        const SynergyDiv = document.createElement('div')
+        let SynergyText = ''
         if (SynergyTab[SynergyKeys[y]] !== 0)
-            SynergyText = SynergyText + SynergyKeys[y] + ':' + SynergyTab[SynergyKeys[y]] + '\n'
+            SynergyText = SynergyText + SynergyKeys[y] + ':' + SynergyTab[SynergyKeys[y]]
+        SynergyDiv.textContent = SynergyText
+        SynergyBox.appendChild(SynergyDiv)
     }
-    SynergyDiv.textContent = SynergyText
-    SynergyBox.appendChild(SynergyDiv)
+    // console.log(SynergyTab)
+    // SynergyDiv.textContent = SynergyText
+    // SynergyBox.appendChild(SynergyDiv)
 }
 
-function updateSynergyData() {
-    for (let i = 0; i < arrangementData.length; i++) {
-        const arrangementChampionObject = arrangementData[i];
-        if (!(arrangementChampionObject.koreanName in SynergyTabCheck)) {
-            for (let j = 0; j < arrangementChampionObject.line.length; j++) {
-                if (!(arrangementChampionObject.line[j] in SynergyTab))
-                    SynergyTab[arrangementChampionObject.line[j]] = 1
-                else
-                    SynergyTab[arrangementChampionObject.line[j]] = SynergyTab[arrangementChampionObject.line[j]] + 1
-            }
-            for (let j = 0; j < arrangementChampionObject.job.length; j++) {
-                if (!(arrangementChampionObject.job[j] in SynergyTab))
-                    SynergyTab[arrangementChampionObject.job[j]] = 1
-                else
-                    SynergyTab[arrangementChampionObject.job[j]] = SynergyTab[arrangementChampionObject.job[j]] + 1
-            }
+function updateSynergyData(championObject) {
+    if (SynergyTabCheck[championObject.koreanName] === 0) {
+        for (let j = 0; j < championObject.line.length; j++) {
+            if (!(championObject.line[j] in SynergyTab))
+                SynergyTab[championObject.line[j]] = 1
+            else
+                SynergyTab[championObject.line[j]] = SynergyTab[championObject.line[j]] + 1
         }
-        SynergyTabCheck[arrangementChampionObject.koreanName] = 1
+        for (let j = 0; j < championObject.job.length; j++) {
+            if (!(championObject.job[j] in SynergyTab))
+                SynergyTab[championObject.job[j]] = 1
+            else
+                SynergyTab[championObject.job[j]] = SynergyTab[championObject.job[j]] + 1
+        }
+        SynergyTabCheck[championObject.koreanName] = SynergyTabCheck[championObject.koreanName] + 1
     }
+    else{
+        SynergyTabCheck[championObject.koreanName] = SynergyTabCheck[championObject.koreanName] + 1
+    }
+    console.log(SynergyTabCheck)
 }
 //// arrangementBox 안씀?
-function onClickChampionBoxChampion(championObject, arrangementBox) {
+function onClickChampionBoxChampion(championObject) {
     return () => {
-        arrangementData.push(championObject);
-        updateSynergyData();
+        uniqueIdentifier = uniqueIdentifier + 1
+        arrangementData.push([championObject,uniqueIdentifier]);
+        updateSynergyData(championObject);
         renderArrangementBoxUI(arrangementData);
         renderSynergyBoxUI(SynergyTab);
     }
@@ -97,7 +116,7 @@ function renderChampionBoxUI() {
         champion.id = championList[i].name;
         champion.className = 'champion';
         champion.textContent = championList[i].koreanName;
-        champion.addEventListener("click", onClickChampionBoxChampion(championList[i], arrangementBox))
+        champion.addEventListener("click", onClickChampionBoxChampion(championList[i]))
         championBox.appendChild(champion);
     }
 }
@@ -127,7 +146,7 @@ function onClickJobButton() {
     renderChampionBoxJobUI()
 }
 
-function renderChampionBoxLineUI(){
+function renderChampionBoxLineUI() {
     for (let i = 0; i < lineBox.length; i++) {
         const lineTab = document.createElement('div');
         lineTab.className = 'lineTab';
@@ -142,14 +161,14 @@ function renderChampionBoxLineUI(){
             champion.id = championList[i].name;
             champion.className = 'champion';
             champion.textContent = championList[i].koreanName;
-            champion.addEventListener("click", onClickChampionBoxChampion(championList[i], arrangementBox))
+            champion.addEventListener("click", onClickChampionBoxChampion(championList[i]))
             const lineTabDiv = document.getElementById(championList[i].line[j])
             lineTabDiv.appendChild(champion);
         }
     }
 }
 
-function renderChampionBoxJobUI(){
+function renderChampionBoxJobUI() {
     for (let i = 0; i < jobBox.length; i++) {
         const jobTab = document.createElement('div');
         jobTab.className = 'jobTab';
@@ -163,15 +182,28 @@ function renderChampionBoxJobUI(){
             champion.id = championList[i].name;
             champion.className = 'champion';
             champion.textContent = championList[i].koreanName;
-            champion.addEventListener("click", onClickChampionBoxChampion(championList[i], arrangementBox))
+            champion.addEventListener("click", onClickChampionBoxChampion(championList[i]))
             const jobTabDiv = document.getElementById(championList[i].job[j])
             jobTabDiv.appendChild(champion);
         }
     }
 }
+
+function onClickClearButton() {
+    arrangementData = []
+    SynergyTabCheck = {}
+    SynergyTab = {}
+    updateSynergyData()
+    renderSynergyBoxUI(SynergyTab)
+    renderArrangementBoxUI(arrangementData)
+}
+
+
+SynergyTabCheckReset()
 renderChampionBoxUI()
 
 document.getElementById("nameButton").addEventListener('click', onClickNameButton);
 document.getElementById("costButton").addEventListener('click', onClickCostButton);
 document.getElementById("jobButton").addEventListener('click', onClickLineButton);
 document.getElementById("lineButton").addEventListener('click', onClickJobButton);
+document.getElementById("clear").addEventListener('click', onClickClearButton);

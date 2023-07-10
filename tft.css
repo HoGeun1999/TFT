@@ -58,7 +58,7 @@ body{
 }
 
 .tab {
-    width: 130px;
+    width: 80px;
     height: 30px;
 }
 
@@ -97,12 +97,8 @@ body{
     margin-bottom: 30px;
 }
 
-/* #garen{
-    margin-left: 10px;
-    margin-top: 10px;
-}
 
-#ryze{
-    margin-left: 70px;
-    margin-top: 10px;
-} */
+#search {
+    height: 30px;
+    width: 210px;
+}
