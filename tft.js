@@ -3,19 +3,45 @@ const championDic = {}
 const championBox = document.querySelector('#championBox');
 const arrangementBox = document.querySelector('#arrangementBox')
 const SynergyBox = document.querySelector('#SynergyBox')
+const inputText = document.querySelector('#search')
 let SynergyTabCheck = {}
 let SynergyTab = {}
 const lineBox = ['공허', '그림자군도', '녹서스', '다르킨', '데마시아', '방랑자', '슈리마', '아이오니아', '요들', '자운', '타곤', '프렐요드', '필트오버']
 const jobBox = ['구원자', '기원자', '난동꾼', '도전자', '마법사', '발명의대가', '백발백중', '불한당', '사수', '여제', '연쇄마법사', '요새', '전쟁기계', '책략가', '학살자']
 let arrangementData = [];
+let searchInputText = ''
+let selectedChampionButton = 'nameButton'
 for (let i = 0; i < championList.length; i++) {
     championDic[championList[i].koreanName] = championList[i]
 }
 let uniqueIdentifier = 0
+
 function SynergyTabCheckReset(){
     for(let i = 0; i < championList.length; i++){
         SynergyTabCheck[championList[i].koreanName] = 0
     }
+}
+
+
+function searchChampionBox(){
+    searchInputText = document.getElementById('search').value;
+    if(selectedChampionButton === 'nameButton'){
+        championBox.replaceChildren()
+        renderChampionBoxUI()
+    }
+    if(selectedChampionButton === 'costButton'){
+        championBox.replaceChildren()
+        renderChampionBoxUI()
+    }
+    if(selectedChampionButton === 'lineButton'){
+        championBox.replaceChildren()
+        renderChampionBoxLineUI()
+    }
+    if(selectedChampionButton === 'jobButton'){
+        championBox.replaceChildren()
+        renderChampionBoxJobUI()
+    }
+
 }
 
 function onClickArrangementBoxChampionClone(championObject) {
@@ -67,15 +93,18 @@ function renderSynergyBoxUI(SynergyTab) {
     const lineBreak = document.createComment('br')
     for (let y = 0; y < SynergyKeys.length; y++) {
         const SynergyDiv = document.createElement('div')
+        SynergyDiv.className = 'synergy'
+        SynergyDiv.id = SynergyKeys[y]
         let SynergyText = ''
         if (SynergyTab[SynergyKeys[y]] !== 0)
-            SynergyText = SynergyText + SynergyKeys[y] + ':' + SynergyTab[SynergyKeys[y]]
+            SynergyText = SynergyKeys[y] + ':' + SynergyTab[SynergyKeys[y]]
         SynergyDiv.textContent = SynergyText
         SynergyBox.appendChild(SynergyDiv)
+        document.querySelector('.synergy').addEventListener('mouseenter', () => {
+            console.log('포인팅 디바이스가 .box 요소 위에 있음');
+        });
     }
-    // console.log(SynergyTab)
-    // SynergyDiv.textContent = SynergyText
-    // SynergyBox.appendChild(SynergyDiv)
+
 }
 
 function updateSynergyData(championObject) {
@@ -111,18 +140,26 @@ function onClickChampionBoxChampion(championObject) {
 }
 
 function renderChampionBoxUI() {
-    for (let i = 0; i < championList.length; i++) {
+    const searchInputTextFilterChampion = []
+    for (let i = 0; i < championList.length; i++){
+        if (championList[i].koreanName.startsWith(searchInputText)){
+            searchInputTextFilterChampion.push(championList[i])
+        }
+    }
+    for (let i = 0; i < searchInputTextFilterChampion.length; i++) {
         const champion = document.createElement('div');
-        champion.id = championList[i].name;
+        champion.id = searchInputTextFilterChampion[i].name;
         champion.className = 'champion';
-        champion.textContent = championList[i].koreanName;
-        champion.addEventListener("click", onClickChampionBoxChampion(championList[i]))
+        champion.textContent = searchInputTextFilterChampion[i].koreanName;
+        champion.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
         championBox.appendChild(champion);
     }
+
 }
 
 
 function onClickNameButton() {
+    selectedChampionButton = 'nameButton'
     championList.sort((a, b) => {
         return a.koreanName < b.koreanName ? -1 : a.koreanName > b.koreanName ? 1 : 0;
     });
@@ -131,69 +168,100 @@ function onClickNameButton() {
 }
 
 function onClickCostButton() {
+    selectedChampionButton = 'costButton'
     championList.sort((a, b) => a.cost - b.cost);
     championBox.replaceChildren()
     renderChampionBoxUI();
 }
 
 function onClickLineButton() {
+    selectedChampionButton = 'lineButton'
     championBox.replaceChildren()
     renderChampionBoxLineUI()
 }
 
 function onClickJobButton() {
+    selectedChampionButton = 'jobButton'
     championBox.replaceChildren()
     renderChampionBoxJobUI()
 }
 
 function renderChampionBoxLineUI() {
-    for (let i = 0; i < lineBox.length; i++) {
+    const searchInputTextFilterChampion = []
+    const newlineBox = new Set()
+    for (let i = 0; i < championList.length; i++){
+        if (championList[i].koreanName.startsWith(searchInputText)){
+            searchInputTextFilterChampion.push(championList[i])
+            for(let j = 0; j < championList[i].line.length; j++){
+                newlineBox.add(championList[i].line[j])
+            }
+        }
+    }
+    const newlineBoxtoArray = [...newlineBox]
+    newlineBoxtoArray.sort(function(a,b){
+        return a.localeCompare(b);
+    })
+    for (let i = 0; i < newlineBoxtoArray.length; i++) {
         const lineTab = document.createElement('div');
         lineTab.className = 'lineTab';
-        lineTab.id = lineBox[i]
-        lineTab.textContent = lineBox[i];
+        lineTab.id = newlineBoxtoArray[i]
+        lineTab.textContent = newlineBoxtoArray[i];
         championBox.appendChild(lineTab);
     }
 
-    for (let i = 0; i < championList.length; i++) {
-        for (let j = 0; j < championList[i].line.length; j++) {
+    for (let i = 0; i < searchInputTextFilterChampion.length; i++) {
+        for (let j = 0; j < searchInputTextFilterChampion[i].line.length; j++) {
             const champion = document.createElement('div');
-            champion.id = championList[i].name;
+            champion.id = searchInputTextFilterChampion[i].name;
             champion.className = 'champion';
-            champion.textContent = championList[i].koreanName;
-            champion.addEventListener("click", onClickChampionBoxChampion(championList[i]))
-            const lineTabDiv = document.getElementById(championList[i].line[j])
+            champion.textContent = searchInputTextFilterChampion[i].koreanName;
+            champion.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
+            const lineTabDiv = document.getElementById(searchInputTextFilterChampion[i].line[j])
             lineTabDiv.appendChild(champion);
         }
     }
 }
 
 function renderChampionBoxJobUI() {
-    for (let i = 0; i < jobBox.length; i++) {
+    const searchInputTextFilterChampion = []
+    const newJobBox = new Set()
+    for (let i = 0; i < championList.length; i++){
+        if (championList[i].koreanName.startsWith(searchInputText)){
+            searchInputTextFilterChampion.push(championList[i])
+            for(let j = 0; j < championList[i].job.length; j++){
+                newJobBox.add(championList[i].job[j])
+            }
+        }
+    }
+    const newJobBoxtoArray = [...newJobBox]
+    newJobBoxtoArray.sort(function(a,b){
+        return a.localeCompare(b);
+    })
+    for (let i = 0; i < newJobBoxtoArray.length; i++) {
         const jobTab = document.createElement('div');
         jobTab.className = 'jobTab';
-        jobTab.id = jobBox[i]
-        jobTab.textContent = jobBox[i];
+        jobTab.id = newJobBoxtoArray[i]
+        jobTab.textContent = newJobBoxtoArray[i];
         championBox.appendChild(jobTab);
     }
-    for (let i = 0; i < championList.length; i++) {
-        for (let j = 0; j < championList[i].job.length; j++) {
+
+    for (let i = 0; i < searchInputTextFilterChampion.length; i++) {
+        for (let j = 0; j < searchInputTextFilterChampion[i].job.length; j++) {
             const champion = document.createElement('div');
-            champion.id = championList[i].name;
+            champion.id = searchInputTextFilterChampion[i].name;
             champion.className = 'champion';
-            champion.textContent = championList[i].koreanName;
-            champion.addEventListener("click", onClickChampionBoxChampion(championList[i]))
-            const jobTabDiv = document.getElementById(championList[i].job[j])
+            champion.textContent = searchInputTextFilterChampion[i].koreanName;
+            champion.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
+            const jobTabDiv = document.getElementById(searchInputTextFilterChampion[i].job[j])
             jobTabDiv.appendChild(champion);
         }
     }
 }
 
 function onClickClearButton() {
-    arrangementData = []
-    SynergyTabCheck = {}
+    arrangementData = []    
+    SynergyTabCheckReset()
     SynergyTab = {}
-    updateSynergyData()
     renderSynergyBoxUI(SynergyTab)
     renderArrangementBoxUI(arrangementData)
 }
@@ -204,6 +272,7 @@ renderChampionBoxUI()
 
 document.getElementById("nameButton").addEventListener('click', onClickNameButton);
 document.getElementById("costButton").addEventListener('click', onClickCostButton);
-document.getElementById("jobButton").addEventListener('click', onClickLineButton);
-document.getElementById("lineButton").addEventListener('click', onClickJobButton);
+document.getElementById("lineButton").addEventListener('click', onClickLineButton);
+document.getElementById("jobButton").addEventListener('click', onClickJobButton);
 document.getElementById("clear").addEventListener('click', onClickClearButton);
+inputText.addEventListener('input',searchChampionBox)
