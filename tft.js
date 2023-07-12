@@ -1,9 +1,12 @@
 import championList from './tftChampionObject.js';
+import lineSynergyData from './tftSynergyObject.js';
+// import lineSynergyEffect from './tftSynergyObject.js';
 const championDic = {}
 const championBox = document.querySelector('#championBox');
 const arrangementBox = document.querySelector('#arrangementBox')
 const SynergyBox = document.querySelector('#SynergyBox')
 const inputText = document.querySelector('#search')
+const htmpWrap = document.querySelector('#wrap')
 let SynergyTabCheck = {}
 let SynergyTab = {}
 const lineBox = ['공허', '그림자군도', '녹서스', '다르킨', '데마시아', '방랑자', '슈리마', '아이오니아', '요들', '자운', '타곤', '프렐요드', '필트오버']
@@ -11,11 +14,11 @@ const jobBox = ['구원자', '기원자', '난동꾼', '도전자', '마법사',
 let arrangementData = [];
 let searchInputText = ''
 let selectedChampionButton = 'nameButton'
+let uniqueIdentifier = 0
+
 for (let i = 0; i < championList.length; i++) {
     championDic[championList[i].koreanName] = championList[i]
 }
-let uniqueIdentifier = 0
-
 function SynergyTabCheckReset(){
     for(let i = 0; i < championList.length; i++){
         SynergyTabCheck[championList[i].koreanName] = 0
@@ -29,15 +32,15 @@ function searchChampionBox(){
         championBox.replaceChildren()
         renderChampionBoxUI()
     }
-    if(selectedChampionButton === 'costButton'){
+    else if(selectedChampionButton === 'costButton'){
         championBox.replaceChildren()
         renderChampionBoxUI()
     }
-    if(selectedChampionButton === 'lineButton'){
+    else if(selectedChampionButton === 'lineButton'){
         championBox.replaceChildren()
         renderChampionBoxLineUI()
     }
-    if(selectedChampionButton === 'jobButton'){
+    else if(selectedChampionButton === 'jobButton'){
         championBox.replaceChildren()
         renderChampionBoxJobUI()
     }
@@ -46,10 +49,7 @@ function searchChampionBox(){
 
 function onClickArrangementBoxChampionClone(championObject) {
     return () => {
-        console.log(arrangementData)
         
-        // arrangementData 에서 champion Object에 해당하는 것을 지운다. 
-        // TODO(geunho): write down  << 이렇게 하면 arrangementData를 처음부터 돌면서 먼저 나오는 championObject를 삭제함..
         for (let i = 0; i < arrangementData.length; i++) {
             if (arrangementData[i][0].name === championObject[0].name && arrangementData[i][1] === championObject[1]) {
                 arrangementData.splice(i, 1);
@@ -69,7 +69,6 @@ function onClickArrangementBoxChampionClone(championObject) {
         SynergyTabCheck[championObject[0].koreanName] = SynergyTabCheck[championObject[0].koreanName] - 1
         renderArrangementBoxUI(arrangementData);
         renderSynergyBoxUI(SynergyTab);
-        console.log(SynergyTabCheck)
     }
 }
 
@@ -84,27 +83,6 @@ function renderArrangementBoxUI(arrangementData) {
 
         arrangementBox.appendChild(championClone);
     }
-}
-
-
-function renderSynergyBoxUI(SynergyTab) {
-    const SynergyKeys = Object.keys(SynergyTab)
-    SynergyBox.replaceChildren()
-    const lineBreak = document.createComment('br')
-    for (let y = 0; y < SynergyKeys.length; y++) {
-        const SynergyDiv = document.createElement('div')
-        SynergyDiv.className = 'synergy'
-        SynergyDiv.id = SynergyKeys[y]
-        let SynergyText = ''
-        if (SynergyTab[SynergyKeys[y]] !== 0)
-            SynergyText = SynergyKeys[y] + ':' + SynergyTab[SynergyKeys[y]]
-        SynergyDiv.textContent = SynergyText
-        SynergyBox.appendChild(SynergyDiv)
-        document.querySelector('.synergy').addEventListener('mouseenter', () => {
-            console.log('포인팅 디바이스가 .box 요소 위에 있음');
-        });
-    }
-
 }
 
 function updateSynergyData(championObject) {
@@ -126,18 +104,57 @@ function updateSynergyData(championObject) {
     else{
         SynergyTabCheck[championObject.koreanName] = SynergyTabCheck[championObject.koreanName] + 1
     }
-    console.log(SynergyTabCheck)
 }
-//// arrangementBox 안씀?
-function onClickChampionBoxChampion(championObject) {
-    return () => {
-        uniqueIdentifier = uniqueIdentifier + 1
-        arrangementData.push([championObject,uniqueIdentifier]);
-        updateSynergyData(championObject);
-        renderArrangementBoxUI(arrangementData);
-        renderSynergyBoxUI(SynergyTab);
+
+function renderSynergyBoxUI(SynergyTab) {
+    const SynergyKeys = Object.keys(SynergyTab)
+    SynergyBox.replaceChildren()
+    for (let y = 0; y < SynergyKeys.length; y++) {
+        const SynergyDiv = document.createElement('div')
+        SynergyDiv.className = 'synergy'
+        SynergyDiv.id = SynergyKeys[y] + 'synergy'
+        let SynergyText = ''
+        if (SynergyTab[SynergyKeys[y]] !== 0)
+            SynergyText = SynergyKeys[y] + ':' + SynergyTab[SynergyKeys[y]]
+        SynergyDiv.textContent = SynergyText
+        SynergyBox.appendChild(SynergyDiv)
+        // SynergyDiv.addEventListener('mouseenter', renderSynergyExplationBox(SynergyKeys[y],SynergyDiv))
+        const synergyExplanationBox = document.createElement('div')
+        SynergyDiv.addEventListener('mouseenter', () => {
+            if(lineBox.includes(SynergyKeys[y])){
+                const synergyExplanationBoxId = SynergyKeys[y] + 'synergyExplanationBox'
+                synergyExplanationBox.id = synergyExplanationBoxId
+                synergyExplanationBox.textContent = lineSynergyData[SynergyKeys[y]][3]
+                htmpWrap.appendChild(synergyExplanationBox)
+                let rect = SynergyDiv.getBoundingClientRect();
+                console.log("x: "+ rect.x); 
+                console.log("y: "+ rect.y);
+                document.getElementById(synergyExplanationBoxId).style.background = 'blue';
+                document.getElementById(synergyExplanationBoxId).style.position = 'alsolute';
+                document.getElementById(synergyExplanationBoxId).style.left = rect.x;
+            }
+        });
+        SynergyDiv.addEventListener('mouseleave', () => {
+            htmpWrap.removeChild(synergyExplanationBox)
+        });
     }
 }
+
+// function renderSynergyExplationBox(lineOrJob,SynergyDiv){
+//     console.log(1000)
+//     if(lineBox.includes(lineOrJob)){
+//         const synergyExplanationBox = document.createElement('div')
+//         const synergyExplanationBoxId = lineOrJob + 'synergyExplanationBox'
+//         synergyExplanationBox.id = synergyExplanationBoxId
+//         synergyExplanationBox.textContent = lineSynergyData[lineOrJob][3]
+//         htmpWrap.appendChild(synergyExplanationBox)
+//         let rect = SynergyDiv.getBoundingClientRect();
+//         console.log("x: "+ rect.x);
+//         console.log("y: "+ rect.y);
+//         document.getElementById(synergyExplanationBoxId).style.background = 'blue';
+//         document.getElementById(synergyExplanationBoxId).style.left = rect.x;
+//     }
+// }
 
 function renderChampionBoxUI() {
     const searchInputTextFilterChampion = []
@@ -156,6 +173,15 @@ function renderChampionBoxUI() {
     }
 
 }
+function onClickChampionBoxChampion(championObject) {
+    return () => {
+        uniqueIdentifier = uniqueIdentifier + 1
+        arrangementData.push([championObject,uniqueIdentifier]);
+        updateSynergyData(championObject);
+        renderArrangementBoxUI(arrangementData);
+        renderSynergyBoxUI(SynergyTab);
+    }
+}
 
 
 function onClickNameButton() {
@@ -165,6 +191,7 @@ function onClickNameButton() {
     });
     championBox.replaceChildren()
     renderChampionBoxUI();
+
 }
 
 function onClickCostButton() {
@@ -172,6 +199,7 @@ function onClickCostButton() {
     championList.sort((a, b) => a.cost - b.cost);
     championBox.replaceChildren()
     renderChampionBoxUI();
+
 }
 
 function onClickLineButton() {
@@ -186,7 +214,7 @@ function onClickJobButton() {
     renderChampionBoxJobUI()
 }
 
-function renderChampionBoxLineUI() {
+function   renderChampionBoxLineUI() {
     const searchInputTextFilterChampion = []
     const newlineBox = new Set()
     for (let i = 0; i < championList.length; i++){
@@ -204,7 +232,7 @@ function renderChampionBoxLineUI() {
     for (let i = 0; i < newlineBoxtoArray.length; i++) {
         const lineTab = document.createElement('div');
         lineTab.className = 'lineTab';
-        lineTab.id = newlineBoxtoArray[i]
+        lineTab.id = newlineBoxtoArray[i];
         lineTab.textContent = newlineBoxtoArray[i];
         championBox.appendChild(lineTab);
     }
