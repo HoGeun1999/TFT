@@ -1,11 +1,11 @@
 import championList from './tftChampionObject.js';
-import lineSynergyData from './tftSynergyObject.js';
-// import lineSynergyEffect from './tftSynergyObject.js';
+import {lineSynergyData,lineSynergyEffect,jobSynergyData,jobSynergyEffect} from './tftSynergyObject.js';
 const championDic = {}
 const championBox = document.querySelector('#championBox');
 const arrangementBox = document.querySelector('#arrangementBox')
 const SynergyBox = document.querySelector('#SynergyBox')
 const inputText = document.querySelector('#search')
+const recommendBox = document.querySelector('#recommendChampion')
 const htmpWrap = document.querySelector('#wrap')
 let SynergyTabCheck = {}
 let SynergyTab = {}
@@ -15,7 +15,6 @@ let arrangementData = [];
 let searchInputText = ''
 let selectedChampionButton = 'nameButton'
 let uniqueIdentifier = 0
-
 for (let i = 0; i < championList.length; i++) {
     championDic[championList[i].koreanName] = championList[i]
 }
@@ -26,7 +25,7 @@ function SynergyTabCheckReset(){
 }
 
 
-function searchChampionBox(){
+function searchChampionBox(){   
     searchInputText = document.getElementById('search').value;
     if(selectedChampionButton === 'nameButton'){
         championBox.replaceChildren()
@@ -49,7 +48,6 @@ function searchChampionBox(){
 
 function onClickArrangementBoxChampionClone(championObject) {
     return () => {
-        
         for (let i = 0; i < arrangementData.length; i++) {
             if (arrangementData[i][0].name === championObject[0].name && arrangementData[i][1] === championObject[1]) {
                 arrangementData.splice(i, 1);
@@ -69,6 +67,7 @@ function onClickArrangementBoxChampionClone(championObject) {
         SynergyTabCheck[championObject[0].koreanName] = SynergyTabCheck[championObject[0].koreanName] - 1
         renderArrangementBoxUI(arrangementData);
         renderSynergyBoxUI(SynergyTab);
+        updateRecommendChampion(SynergyTab)
     }
 }
 
@@ -106,55 +105,76 @@ function updateSynergyData(championObject) {
     }
 }
 
+function updateRecommendChampion(SynergyTab){
+    const recommendChapionList = [];
+    for(let i = 0 ; i < championList.length; i++){
+        for(let j = 0; j < championList[i].line.length; j++){
+            if(Object.keys(SynergyTab).includes(championList[i].line[j]) || Object.keys(SynergyTab).includes(championList[i].job[j])){
+                recommendChapionList.push(championList[i])
+            }
+        }
+    }
+    renderrecommendBoxUI(recommendChapionList)
+}
+
 function renderSynergyBoxUI(SynergyTab) {
     const SynergyKeys = Object.keys(SynergyTab)
     SynergyBox.replaceChildren()
     for (let y = 0; y < SynergyKeys.length; y++) {
         const SynergyDiv = document.createElement('div')
-        SynergyDiv.className = 'synergy'
+        SynergyDiv.className = 'synergyDiv'
         SynergyDiv.id = SynergyKeys[y] + 'synergy'
         let SynergyText = ''
         if (SynergyTab[SynergyKeys[y]] !== 0)
             SynergyText = SynergyKeys[y] + ':' + SynergyTab[SynergyKeys[y]]
         SynergyDiv.textContent = SynergyText
         SynergyBox.appendChild(SynergyDiv)
-        // SynergyDiv.addEventListener('mouseenter', renderSynergyExplationBox(SynergyKeys[y],SynergyDiv))
         const synergyExplanationBox = document.createElement('div')
         SynergyDiv.addEventListener('mouseenter', () => {
             if(lineBox.includes(SynergyKeys[y])){
                 const synergyExplanationBoxId = SynergyKeys[y] + 'synergyExplanationBox'
                 synergyExplanationBox.id = synergyExplanationBoxId
-                synergyExplanationBox.textContent = lineSynergyData[SynergyKeys[y]][3]
-                htmpWrap.appendChild(synergyExplanationBox)
-                let rect = SynergyDiv.getBoundingClientRect();
-                console.log("x: "+ rect.x); 
-                console.log("y: "+ rect.y);
-                document.getElementById(synergyExplanationBoxId).style.background = 'blue';
-                document.getElementById(synergyExplanationBoxId).style.position = 'alsolute';
-                document.getElementById(synergyExplanationBoxId).style.left = rect.x;
+                synergyExplanationBox.className = 'synergyExplanation'
+                synergyExplanationBox.textContent = lineSynergyData[SynergyKeys[y]]
+                SynergyBox.appendChild(synergyExplanationBox)
+
+            }
+            if(jobBox.includes(SynergyKeys[y])){
+                const synergyExplanationBoxId = SynergyKeys[y] + 'synergyExplanationBox'
+                synergyExplanationBox.id = synergyExplanationBoxId
+                synergyExplanationBox.className = 'synergyExplanation'
+                synergyExplanationBox.textContent = jobSynergyData[SynergyKeys[y]]
+                SynergyBox.appendChild(synergyExplanationBox)
+
             }
         });
         SynergyDiv.addEventListener('mouseleave', () => {
-            htmpWrap.removeChild(synergyExplanationBox)
+            SynergyBox.removeChild(synergyExplanationBox)
+
         });
     }
 }
 
-// function renderSynergyExplationBox(lineOrJob,SynergyDiv){
-//     console.log(1000)
-//     if(lineBox.includes(lineOrJob)){
-//         const synergyExplanationBox = document.createElement('div')
-//         const synergyExplanationBoxId = lineOrJob + 'synergyExplanationBox'
-//         synergyExplanationBox.id = synergyExplanationBoxId
-//         synergyExplanationBox.textContent = lineSynergyData[lineOrJob][3]
-//         htmpWrap.appendChild(synergyExplanationBox)
-//         let rect = SynergyDiv.getBoundingClientRect();
-//         console.log("x: "+ rect.x);
-//         console.log("y: "+ rect.y);
-//         document.getElementById(synergyExplanationBoxId).style.background = 'blue';
-//         document.getElementById(synergyExplanationBoxId).style.left = rect.x;
-//     }
-// }
+function renderrecommendBoxUI(recommendChapionList){
+    recommendBox.replaceChildren()
+    const recommendChapionArr = Array.from(recommendChapionList);
+    // for(let i = 0 ; i < championList.length; i++){
+    //     for(let j = 0; j < championList[i].line.length; j++){
+    //         if(Object.keys(SynergyTab).includes(championList[i].line[j]) || Object.keys(SynergyTab).includes(championList[i].job[j])){
+    //             recommendChapionList.push(championList[i])
+    //         }
+    //     }
+    // }
+    console.log(recommendChapionArr)
+    for(let i = 0 ; i < recommendChapionArr.length; i++){
+        const champion = document.createElement('div');
+        champion.id = recommendChapionArr[i].name + 'recommend';
+        champion.className = 'champion';
+        champion.textContent = recommendChapionArr[i].koreanName;
+        champion.addEventListener("click", onClickChampionBoxChampion(recommendChapionArr[i]))
+        recommendBox.appendChild(champion);
+    }
+}
 
 function renderChampionBoxUI() {
     const searchInputTextFilterChampion = []
@@ -180,6 +200,7 @@ function onClickChampionBoxChampion(championObject) {
         updateSynergyData(championObject);
         renderArrangementBoxUI(arrangementData);
         renderSynergyBoxUI(SynergyTab);
+        updateRecommendChampion(SynergyTab);
     }
 }
 
@@ -214,7 +235,7 @@ function onClickJobButton() {
     renderChampionBoxJobUI()
 }
 
-function   renderChampionBoxLineUI() {
+function renderChampionBoxLineUI() {
     const searchInputTextFilterChampion = []
     const newlineBox = new Set()
     for (let i = 0; i < championList.length; i++){
@@ -292,6 +313,7 @@ function onClickClearButton() {
     SynergyTab = {}
     renderSynergyBoxUI(SynergyTab)
     renderArrangementBoxUI(arrangementData)
+    renderrecommendBoxUI()
 }
 
 
