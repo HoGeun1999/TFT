@@ -1,5 +1,6 @@
 import championList from './tftChampionObject.js';
 import {lineSynergyData,lineSynergyEffect,jobSynergyData,jobSynergyEffect} from './tftSynergyObject.js';
+import deck from './tftRecommendDeck.js';
 const championDic = {}
 const championBox = document.querySelector('#championBox');
 const arrangementBox = document.querySelector('#arrangementBox')
@@ -43,7 +44,6 @@ function searchChampionBox(){
         championBox.replaceChildren()
         renderChampionBoxJobUI()
     }
-
 }
 
 function onClickArrangementBoxChampionClone(championObject) {
@@ -53,7 +53,7 @@ function onClickArrangementBoxChampionClone(championObject) {
                 arrangementData.splice(i, 1);
                 i--;
                 break
-            }
+            }   
         }
         if(SynergyTabCheck[championObject[0].koreanName] === 1){
             for (let x = 0; x < championObject[0].line.length; x++)
@@ -67,19 +67,18 @@ function onClickArrangementBoxChampionClone(championObject) {
         SynergyTabCheck[championObject[0].koreanName] = SynergyTabCheck[championObject[0].koreanName] - 1
         renderArrangementBoxUI(arrangementData);
         renderSynergyBoxUI(SynergyTab);
-        updateRecommendChampion(SynergyTab)
+        renderrecommendBoxUI(arrangementData)
     }
 }
 
 function renderArrangementBoxUI(arrangementData) {
-    arrangementBox.replaceChildren()
+    arrangementBox.replaceChildren()  
     for (const championObject of arrangementData) {
         const championClone = document.createElement('div');
         championClone.className = 'clone';
-        championClone.id = championObject[0].koreanName;
+        championClone.id = championObject[0].koreanName; 
         championClone.textContent = championObject[0].koreanName;
         championClone.addEventListener("click", onClickArrangementBoxChampionClone(championObject));
-
         arrangementBox.appendChild(championClone);
     }
 }
@@ -105,37 +104,36 @@ function updateSynergyData(championObject) {
     }
 }
 
-function updateRecommendChampion(SynergyTab){
-    const recommendChapionList = [];
-    for(let i = 0 ; i < championList.length; i++){
-        for(let j = 0; j < championList[i].line.length; j++){
-            if(Object.keys(SynergyTab).includes(championList[i].line[j]) || Object.keys(SynergyTab).includes(championList[i].job[j])){
-                recommendChapionList.push(championList[i])
-            }
-        }
-    }
-    renderrecommendBoxUI(recommendChapionList)
-}
-
 function renderSynergyBoxUI(SynergyTab) {
     const SynergyKeys = Object.keys(SynergyTab)
     SynergyBox.replaceChildren()
     for (let y = 0; y < SynergyKeys.length; y++) {
+        if (SynergyTab[SynergyKeys[y]] === 0){
+            continue
+        }
         const SynergyDiv = document.createElement('div')
         SynergyDiv.className = 'synergyDiv'
         SynergyDiv.id = SynergyKeys[y] + 'synergy'
         let SynergyText = ''
-        if (SynergyTab[SynergyKeys[y]] !== 0)
+        if (SynergyTab[SynergyKeys[y]] !== 0)  
             SynergyText = SynergyKeys[y] + ':' + SynergyTab[SynergyKeys[y]]
         SynergyDiv.textContent = SynergyText
         SynergyBox.appendChild(SynergyDiv)
         const synergyExplanationBox = document.createElement('div')
         SynergyDiv.addEventListener('mouseenter', () => {
+            let rect = SynergyDiv.getBoundingClientRect();
+            let height = rect.y - 57
+            let text = ''
             if(lineBox.includes(SynergyKeys[y])){
                 const synergyExplanationBoxId = SynergyKeys[y] + 'synergyExplanationBox'
                 synergyExplanationBox.id = synergyExplanationBoxId
                 synergyExplanationBox.className = 'synergyExplanation'
-                synergyExplanationBox.textContent = lineSynergyData[SynergyKeys[y]]
+                text = lineSynergyEffect[SynergyKeys[y]] +'\n'
+                for(const synergyObjectKey of Object.keys(lineSynergyData[SynergyKeys[y]])){
+                    text = text + '(' + synergyObjectKey + ')' + lineSynergyData[SynergyKeys[y]][synergyObjectKey] + '\n'    
+                }
+                synergyExplanationBox.textContent = text;
+                synergyExplanationBox.style.top = height;
                 SynergyBox.appendChild(synergyExplanationBox)
 
             }
@@ -143,9 +141,13 @@ function renderSynergyBoxUI(SynergyTab) {
                 const synergyExplanationBoxId = SynergyKeys[y] + 'synergyExplanationBox'
                 synergyExplanationBox.id = synergyExplanationBoxId
                 synergyExplanationBox.className = 'synergyExplanation'
-                synergyExplanationBox.textContent = jobSynergyData[SynergyKeys[y]]
+                text = jobSynergyEffect[SynergyKeys[y]] +'\n'
+                for(const synergyObjectKey of Object.keys(jobSynergyData[SynergyKeys[y]])){
+                    text = text + '(' + synergyObjectKey + ')' +jobSynergyData[SynergyKeys[y]][synergyObjectKey] + '\n'    
+                }
+                synergyExplanationBox.textContent = text;
+                synergyExplanationBox.style.top = height;
                 SynergyBox.appendChild(synergyExplanationBox)
-
             }
         });
         SynergyDiv.addEventListener('mouseleave', () => {
@@ -155,24 +157,44 @@ function renderSynergyBoxUI(SynergyTab) {
     }
 }
 
-function renderrecommendBoxUI(recommendChapionList){
+function renderrecommendBoxUI(arrangementData){
     recommendBox.replaceChildren()
-    const recommendChapionArr = Array.from(recommendChapionList);
-    // for(let i = 0 ; i < championList.length; i++){
-    //     for(let j = 0; j < championList[i].line.length; j++){
-    //         if(Object.keys(SynergyTab).includes(championList[i].line[j]) || Object.keys(SynergyTab).includes(championList[i].job[j])){
-    //             recommendChapionList.push(championList[i])
-    //         }
-    //     }
-    // }
-    console.log(recommendChapionArr)
-    for(let i = 0 ; i < recommendChapionArr.length; i++){
-        const champion = document.createElement('div');
-        champion.id = recommendChapionArr[i].name + 'recommend';
-        champion.className = 'champion';
-        champion.textContent = recommendChapionArr[i].koreanName;
-        champion.addEventListener("click", onClickChampionBoxChampion(recommendChapionArr[i]))
-        recommendBox.appendChild(champion);
+    const arrangementChampionSet = new Set()
+    for(let i = 0; i < arrangementData.length; i++){
+        arrangementChampionSet.add(arrangementData[i][0].koreanName)
+    }
+    const arrangementChampion = Array.from(arrangementChampionSet)
+    if(arrangementChampion.length < 3){
+        return
+    }
+    for (let i = 0; i < deck.length; i++){
+        let count = 0
+        for(let j = 0; j < arrangementChampion.length; j ++){
+            if(deck[i].deckList.includes(arrangementChampion[j])){
+                count = count + 1
+            }       
+        }        
+        if(count > 3){
+            const recommendDeckName = document.createElement('div')
+            recommendDeckName.className = 'lineTab'
+            recommendDeckName.textContent = deck[i].deckName
+            recommendBox.appendChild(recommendDeckName)
+            for(const champion of deck[i].deckList){
+                if(arrangementChampion.includes(champion)){
+                    const recommendDeckChampion = document.createElement('div')
+                    recommendDeckChampion.className = 'champion'
+                    recommendDeckChampion.textContent = champion
+                    recommendDeckName.appendChild(recommendDeckChampion)
+                    recommendDeckChampion.style.background = 'yellow'
+                }
+                else{
+                    const recommendDeckChampion = document.createElement('div')
+                    recommendDeckChampion.className = 'champion'
+                    recommendDeckChampion.textContent = champion
+                    recommendDeckName.appendChild(recommendDeckChampion)
+                }
+            }
+        }
     }
 }
 
@@ -200,7 +222,7 @@ function onClickChampionBoxChampion(championObject) {
         updateSynergyData(championObject);
         renderArrangementBoxUI(arrangementData);
         renderSynergyBoxUI(SynergyTab);
-        updateRecommendChampion(SynergyTab);
+        renderrecommendBoxUI(arrangementData)
     }
 }
 
@@ -313,7 +335,7 @@ function onClickClearButton() {
     SynergyTab = {}
     renderSynergyBoxUI(SynergyTab)
     renderArrangementBoxUI(arrangementData)
-    renderrecommendBoxUI()
+    renderrecommendBoxUI(arrangementData)
 }
 
 
