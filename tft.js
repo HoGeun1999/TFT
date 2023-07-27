@@ -1,6 +1,7 @@
 import championList from './tftChampionObject.js';
 import {lineSynergyData,lineSynergyEffect,jobSynergyData,jobSynergyEffect} from './tftSynergyObject.js';
 import deck from './tftRecommendDeck.js';
+import img from './tftChapionImg.js';
 const championDic = {}
 const championBox = document.querySelector('#championBox');
 const arrangementBox = document.querySelector('#arrangementBox')
@@ -78,6 +79,9 @@ function renderArrangementBoxUI(arrangementData) {
         championClone.className = 'clone';
         championClone.id = championObject[0].koreanName; 
         championClone.textContent = championObject[0].koreanName;
+        const bgImg = new Image()
+        bgImg.src = "https://ddragon.leagueoflegends.com/cdn/13.13.1/img/champion/" + championObject[0].name + '.png'
+        championClone.appendChild(bgImg)
         championClone.addEventListener("click", onClickArrangementBoxChampionClone(championObject));
         arrangementBox.appendChild(championClone);
     }
@@ -206,12 +210,22 @@ function renderChampionBoxUI() {
         }
     }
     for (let i = 0; i < searchInputTextFilterChampion.length; i++) {
+        const championWrap = document.createElement('div');
+        championWrap.className = 'championWrap';
         const champion = document.createElement('div');
+        const championImg = document.createComment('div');
+        championImg.className = 'img';
+        champion.className = 'championText'
         champion.id = searchInputTextFilterChampion[i].name;
-        champion.className = 'champion';
         champion.textContent = searchInputTextFilterChampion[i].koreanName;
-        champion.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
-        championBox.appendChild(champion);
+        const bgImg = new Image()
+        bgImg.id = 'championImg'
+        bgImg.src = "https://ddragon.leagueoflegends.com/cdn/13.13.1/img/champion/" + searchInputTextFilterChampion[i].name + '.png'
+        // champion.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
+        championWrap.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
+        championWrap.appendChild(bgImg)
+        championWrap.appendChild(champion)
+        championBox.appendChild(championWrap);
     }
 
 }
@@ -280,15 +294,26 @@ function renderChampionBoxLineUI() {
         championBox.appendChild(lineTab);
     }
 
+
     for (let i = 0; i < searchInputTextFilterChampion.length; i++) {
         for (let j = 0; j < searchInputTextFilterChampion[i].line.length; j++) {
+            const championWrap = document.createElement('div');
+            championWrap.className = 'championWrap';
             const champion = document.createElement('div');
+            const championImg = document.createComment('div');
+            championImg.className = 'img';
             champion.id = searchInputTextFilterChampion[i].name;
-            champion.className = 'champion';
+            champion.className = 'championText';
             champion.textContent = searchInputTextFilterChampion[i].koreanName;
-            champion.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
+            const bgImg = new Image()
+            bgImg.id = 'championImg'
+            bgImg.src = "https://ddragon.leagueoflegends.com/cdn/13.13.1/img/champion/" + searchInputTextFilterChampion[i].name + '.png'
+            champion.appendChild(bgImg)
+            championWrap.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i])) 
+            championWrap.appendChild(bgImg)
+            championWrap.appendChild(champion)
             const lineTabDiv = document.getElementById(searchInputTextFilterChampion[i].line[j])
-            lineTabDiv.appendChild(champion);
+            lineTabDiv.appendChild(championWrap);
         }
     }
 }
