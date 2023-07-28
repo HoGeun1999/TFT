@@ -219,7 +219,7 @@ function renderChampionBoxUI() {
         champion.id = searchInputTextFilterChampion[i].name;
         champion.textContent = searchInputTextFilterChampion[i].koreanName;
         const bgImg = new Image()
-        bgImg.id = 'championImg'
+        bgImg.className = 'championImg'
         bgImg.src = "https://ddragon.leagueoflegends.com/cdn/13.13.1/img/champion/" + searchInputTextFilterChampion[i].name + '.png'
         // champion.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
         championWrap.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
@@ -288,10 +288,22 @@ function renderChampionBoxLineUI() {
     })
     for (let i = 0; i < newlineBoxtoArray.length; i++) {
         const lineTab = document.createElement('div');
+        const lineTabText = document.createElement('div')
+        lineTabText.textContent = newlineBoxtoArray[i];
+        const lineTabWrap = document.createElement('div');
+        const synergyImg = new Image()
+        const synergyImgDiv = document.createElement('div');
+        synergyImg.className = 'synergyImg';
+        synergyImg.src = 'tft-trait/Trait_Icon_9_void.TFT_Set9.png'
         lineTab.className = 'lineTab';
-        lineTab.id = newlineBoxtoArray[i];
-        lineTab.textContent = newlineBoxtoArray[i];
-        championBox.appendChild(lineTab);
+        lineTabWrap.id = newlineBoxtoArray[i];
+        synergyImgDiv.appendChild(synergyImg)
+        lineTab.appendChild(synergyImgDiv)
+        lineTab.appendChild(lineTabText)
+        lineTabWrap.appendChild(lineTab);
+        
+        // lineTabWrap.appendChild(synergyImg)
+        championBox.appendChild(lineTabWrap);
     }
 
 
@@ -306,7 +318,7 @@ function renderChampionBoxLineUI() {
             champion.className = 'championText';
             champion.textContent = searchInputTextFilterChampion[i].koreanName;
             const bgImg = new Image()
-            bgImg.id = 'championImg'
+            bgImg.className = 'championImg'
             bgImg.src = "https://ddragon.leagueoflegends.com/cdn/13.13.1/img/champion/" + searchInputTextFilterChampion[i].name + '.png'
             champion.appendChild(bgImg)
             championWrap.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i])) 

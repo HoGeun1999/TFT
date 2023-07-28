@@ -99,8 +99,7 @@ body{
 
 .lineTab {
     border: 1px solid black;
-    height: 30px;
-    margin-bottom: 30px;
+    height: 30px;    
 }
 
 
@@ -131,8 +130,8 @@ body{
 
 .championWrap{
     border: 1px solid black;
-    height: 75px;
-    width: 75px;
+    height: 60px;
+    width: 60px;
     margin-right: 10px;
     margin-top: 10px;
     display: inline-table;
@@ -140,7 +139,15 @@ body{
 
 }
 
-#championImg{
+.championImg{
     width: 100%;
 	vertical-align: middle;
 }
+
+.synergyImg{
+    background-color: black;
+    width: 30px;
+    height: 30px;
+    float: left;
+}
+
