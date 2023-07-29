@@ -1,7 +1,6 @@
 import championList from './tftChampionObject.js';
-import {lineSynergyData,lineSynergyEffect,jobSynergyData,jobSynergyEffect} from './tftSynergyObject.js';
+import {lineSynergyData,lineSynergyEffect,jobSynergyData,jobSynergyEffect,lineBoxEnglish,jobBoxEnglish} from './tftSynergyObject.js';
 import deck from './tftRecommendDeck.js';
-import img from './tftChapionImg.js';
 const championDic = {}
 const championBox = document.querySelector('#championBox');
 const arrangementBox = document.querySelector('#arrangementBox')
@@ -11,8 +10,6 @@ const recommendBox = document.querySelector('#recommendChampion')
 const htmpWrap = document.querySelector('#wrap')
 let SynergyTabCheck = {}
 let SynergyTab = {}
-const lineBox = ['공허', '그림자군도', '녹서스', '다르킨', '데마시아', '방랑자', '슈리마', '아이오니아', '요들', '자운', '타곤', '프렐요드', '필트오버']
-const jobBox = ['구원자', '기원자', '난동꾼', '도전자', '마법사', '발명의대가', '백발백중', '불한당', '사수', '여제', '연쇄마법사', '요새', '전쟁기계', '책략가', '학살자']
 let arrangementData = [];
 let searchInputText = ''
 let selectedChampionButton = 'nameButton'
@@ -76,15 +73,22 @@ function renderArrangementBoxUI(arrangementData) {
     arrangementBox.replaceChildren()  
     for (const championObject of arrangementData) {
         const championClone = document.createElement('div');
-        championClone.className = 'clone';
+        const championWrap = document.createElement('div');
+        const championImg = document.createComment('div');
+        championImg.className = 'img';
+        championWrap.className = 'championWrap';
+        championClone.className = 'championText';
         championClone.id = championObject[0].koreanName; 
         championClone.textContent = championObject[0].koreanName;
         const bgImg = new Image()
+        bgImg.className = 'championImg'
         bgImg.src = "https://ddragon.leagueoflegends.com/cdn/13.13.1/img/champion/" + championObject[0].name + '.png'
-        championClone.appendChild(bgImg)
-        championClone.addEventListener("click", onClickArrangementBoxChampionClone(championObject));
-        arrangementBox.appendChild(championClone);
+        championWrap.addEventListener("click", onClickArrangementBoxChampionClone(championObject));
+        championWrap.appendChild(bgImg)
+        championWrap.appendChild(championClone)
+        arrangementBox.appendChild(championWrap);
     }
+    
 }
 
 function updateSynergyData(championObject) {
@@ -128,7 +132,7 @@ function renderSynergyBoxUI(SynergyTab) {
             let rect = SynergyDiv.getBoundingClientRect();
             let height = rect.y - 57
             let text = ''
-            if(lineBox.includes(SynergyKeys[y])){
+            if(Object.keys(lineBoxEnglish).includes(SynergyKeys[y])){
                 const synergyExplanationBoxId = SynergyKeys[y] + 'synergyExplanationBox'
                 synergyExplanationBox.id = synergyExplanationBoxId
                 synergyExplanationBox.className = 'synergyExplanation'
@@ -141,7 +145,7 @@ function renderSynergyBoxUI(SynergyTab) {
                 SynergyBox.appendChild(synergyExplanationBox)
 
             }
-            if(jobBox.includes(SynergyKeys[y])){
+            if(Object.keys(jobBoxEnglish).includes(SynergyKeys[y])){
                 const synergyExplanationBoxId = SynergyKeys[y] + 'synergyExplanationBox'
                 synergyExplanationBox.id = synergyExplanationBoxId
                 synergyExplanationBox.className = 'synergyExplanation'
@@ -185,21 +189,36 @@ function renderrecommendBoxUI(arrangementData){
             recommendBox.appendChild(recommendDeckName)
             for(const champion of deck[i].deckList){
                 if(arrangementChampion.includes(champion)){
-                    const recommendDeckChampion = document.createElement('div')
-                    recommendDeckChampion.className = 'champion'
-                    recommendDeckChampion.textContent = champion
-                    recommendDeckName.appendChild(recommendDeckChampion)
-                    recommendDeckChampion.style.background = 'yellow'
+                    const championImgDiv = championImgDivMake(championDic[champion])
+                    recommendDeckName.appendChild(championImgDiv)
+                    recommendBox.appendChild(championImgDiv)
                 }
                 else{
-                    const recommendDeckChampion = document.createElement('div')
-                    recommendDeckChampion.className = 'champion'
-                    recommendDeckChampion.textContent = champion
-                    recommendDeckName.appendChild(recommendDeckChampion)
+                    const championImgDiv = championImgDivMake(championDic[champion])
+                    recommendDeckName.appendChild(championImgDiv)
+                    recommendBox.appendChild(championImgDiv)
+                    championImgDiv.style.opacity = 0.5;
                 }
             }
-        }
+        } 
     }
+}
+
+function championImgDivMake(champion){
+    const championWrap = document.createElement('div')
+    championWrap.className = 'championWrap'
+    const ChampionImg = document.createElement('div')
+    ChampionImg.className = 'img'
+    const bgImg = new Image()
+    bgImg.className = 'championImg'
+    bgImg.src = "https://ddragon.leagueoflegends.com/cdn/13.13.1/img/champion/" + champion.name + '.png'
+    const ChampionText = document.createElement('div')
+    ChampionText.className = 'championText'
+    ChampionText.textContent = champion.koreanName
+    ChampionImg.appendChild(bgImg)
+    championWrap.appendChild(ChampionImg)
+    championWrap.appendChild(ChampionText)
+    return championWrap
 }
 
 function renderChampionBoxUI() {
@@ -210,21 +229,8 @@ function renderChampionBoxUI() {
         }
     }
     for (let i = 0; i < searchInputTextFilterChampion.length; i++) {
-        const championWrap = document.createElement('div');
-        championWrap.className = 'championWrap';
-        const champion = document.createElement('div');
-        const championImg = document.createComment('div');
-        championImg.className = 'img';
-        champion.className = 'championText'
-        champion.id = searchInputTextFilterChampion[i].name;
-        champion.textContent = searchInputTextFilterChampion[i].koreanName;
-        const bgImg = new Image()
-        bgImg.className = 'championImg'
-        bgImg.src = "https://ddragon.leagueoflegends.com/cdn/13.13.1/img/champion/" + searchInputTextFilterChampion[i].name + '.png'
-        // champion.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
+        const championWrap = championImgDivMake(searchInputTextFilterChampion[i])
         championWrap.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
-        championWrap.appendChild(bgImg)
-        championWrap.appendChild(champion)
         championBox.appendChild(championWrap);
     }
 
@@ -289,41 +295,28 @@ function renderChampionBoxLineUI() {
     for (let i = 0; i < newlineBoxtoArray.length; i++) {
         const lineTab = document.createElement('div');
         const lineTabText = document.createElement('div')
+        lineTabText.className = 'synergyTabText'
         lineTabText.textContent = newlineBoxtoArray[i];
         const lineTabWrap = document.createElement('div');
         const synergyImg = new Image()
         const synergyImgDiv = document.createElement('div');
         synergyImg.className = 'synergyImg';
-        synergyImg.src = 'tft-trait/Trait_Icon_9_void.TFT_Set9.png'
+        synergyImg.src = 'tft-trait/Trait_Icon_9_' + lineBoxEnglish[newlineBoxtoArray[i]] + '.TFT_Set9.png'
         lineTab.className = 'lineTab';
+        synergyImgDiv.className = 'synergyImgDiv'
         lineTabWrap.id = newlineBoxtoArray[i];
-        synergyImgDiv.appendChild(synergyImg)
+        synergyImgDiv.appendChild(synergyImg) 
         lineTab.appendChild(synergyImgDiv)
         lineTab.appendChild(lineTabText)
         lineTabWrap.appendChild(lineTab);
-        
-        // lineTabWrap.appendChild(synergyImg)
         championBox.appendChild(lineTabWrap);
     }
 
 
     for (let i = 0; i < searchInputTextFilterChampion.length; i++) {
         for (let j = 0; j < searchInputTextFilterChampion[i].line.length; j++) {
-            const championWrap = document.createElement('div');
-            championWrap.className = 'championWrap';
-            const champion = document.createElement('div');
-            const championImg = document.createComment('div');
-            championImg.className = 'img';
-            champion.id = searchInputTextFilterChampion[i].name;
-            champion.className = 'championText';
-            champion.textContent = searchInputTextFilterChampion[i].koreanName;
-            const bgImg = new Image()
-            bgImg.className = 'championImg'
-            bgImg.src = "https://ddragon.leagueoflegends.com/cdn/13.13.1/img/champion/" + searchInputTextFilterChampion[i].name + '.png'
-            champion.appendChild(bgImg)
+            const championWrap = championImgDivMake(searchInputTextFilterChampion[i])
             championWrap.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i])) 
-            championWrap.appendChild(bgImg)
-            championWrap.appendChild(champion)
             const lineTabDiv = document.getElementById(searchInputTextFilterChampion[i].line[j])
             lineTabDiv.appendChild(championWrap);
         }
@@ -347,21 +340,30 @@ function renderChampionBoxJobUI() {
     })
     for (let i = 0; i < newJobBoxtoArray.length; i++) {
         const jobTab = document.createElement('div');
+        const jobTabText = document.createElement('div')
+        jobTabText.className = 'synergyTabText'
+        jobTabText.textContent = newJobBoxtoArray[i];
+        const jobTabWrap = document.createElement('div');
+        const synergyImg = new Image()
+        const synergyImgDiv = document.createElement('div');
+        synergyImg.className = 'synergyImg';
+        synergyImg.src = 'tft-trait/Trait_Icon_9_' + jobBoxEnglish[newJobBoxtoArray[i]] + '.TFT_Set9.png'
         jobTab.className = 'jobTab';
-        jobTab.id = newJobBoxtoArray[i]
-        jobTab.textContent = newJobBoxtoArray[i];
-        championBox.appendChild(jobTab);
+        synergyImgDiv.className = 'synergyImgDiv'
+        jobTabWrap.id = newJobBoxtoArray[i];
+        synergyImgDiv.appendChild(synergyImg)
+        jobTab.appendChild(synergyImgDiv)
+        jobTab.appendChild(jobTabText)
+        jobTabWrap.appendChild(jobTab);
+        championBox.appendChild(jobTabWrap);
     }
 
     for (let i = 0; i < searchInputTextFilterChampion.length; i++) {
         for (let j = 0; j < searchInputTextFilterChampion[i].job.length; j++) {
-            const champion = document.createElement('div');
-            champion.id = searchInputTextFilterChampion[i].name;
-            champion.className = 'champion';
-            champion.textContent = searchInputTextFilterChampion[i].koreanName;
-            champion.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
+            const championWrap = championImgDivMake(searchInputTextFilterChampion[i])
+            championWrap.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
             const jobTabDiv = document.getElementById(searchInputTextFilterChampion[i].job[j])
-            jobTabDiv.appendChild(champion);
+            jobTabDiv.appendChild(championWrap);
         }
     }
 }

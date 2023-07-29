@@ -172,3 +172,38 @@ export const jobSynergyEffect = {
     책략가 : '전투 시작: 전방 2열의 아군들이 15초 동안 보호막을 얻습니다. 후방 2열의 아군들이 주문력을 얻습니다.',
     학살자 : '학살자가 15%의 모든 피해 흡혈을 얻습니다. 학살자는 추가 피해를 입힙니다. 체력이 75% 아래인 유닛에게는 추가 피해가 두 배로 증가합니다.'
 }
+
+
+export const lineBoxEnglish = {
+    공허 : 'Void',
+    그림자군도 : 'ShadowIsles',
+    녹서스 : 'Noxus',
+    다르킨 : 'Darkin',
+    데마시아 : 'Demacia',
+    방랑자 : 'Wanderer',
+    슈리마 : 'Shurima',
+    아이오니아 : 'Ionia',
+    요들 : 'Yordle',
+    자운 : 'Zaun',
+    타곤 : 'Targon',
+    프렐요드 : 'Freljord',
+    필트오버 : 'Piltover'
+}
+
+export const jobBoxEnglish = {
+    구원자 : 'Redeemer',
+    기원자 : 'Invoker',
+    난동꾼 : 'Bruiser',
+    도전자 : 'Challenger',
+    마법사 : 'Sorcerer',
+    발명의대가 : 'Technogenius',
+    백발백중 : 'Deadeye',
+    불한당 : 'Rogue',
+    사수 : 'Gunner',
+    여제 : 'Empress',
+    연쇄마법사 : 'Multicaster',
+    요새 : 'Bastion',
+    전쟁기계 : 'Juggernaut',
+    책략가 : 'Strategist',
+    학살자 : 'Slayer'
+}
