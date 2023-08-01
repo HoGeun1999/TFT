@@ -4,7 +4,7 @@ import deck from './tftRecommendDeck.js';
 const championDic = {}
 const championBox = document.querySelector('#championBox');
 const arrangementBox = document.querySelector('#arrangementBox')
-const SynergyBox = document.querySelector('#SynergyBox')
+const synergyBox = document.querySelector('#SynergyBox')
 const inputText = document.querySelector('#search')
 const recommendBox = document.querySelector('#recommendChampion')
 const htmpWrap = document.querySelector('#wrap')
@@ -112,54 +112,179 @@ function updateSynergyData(championObject) {
     }
 }
 
-function renderSynergyBoxUI(SynergyTab) {
-    const SynergyKeys = Object.keys(SynergyTab)
-    SynergyBox.replaceChildren()
-    for (let y = 0; y < SynergyKeys.length; y++) {
-        if (SynergyTab[SynergyKeys[y]] === 0){
+function renderSynergyBoxUI(synergyTab) {
+    const synergyKey = Object.keys(synergyTab)
+    const synergyKeySort = []
+    for(let j = 0; j <synergyKey.length; j++){
+        let avtivationSynergyLv = 0
+        if(Object.keys(lineSynergyData).includes(synergyKey[j])){
+            for(let i = 0; i < Object.keys(lineSynergyData[synergyKey[j]]).length; i++){                  
+                if(i === Object.keys(lineSynergyData[synergyKey[j]]).length -1){
+                    avtivationSynergyLv = i
+                    break
+                }
+                if(synergyTab[synergyKey[j]] < Object.keys(lineSynergyData[synergyKey[j]])[i]){
+                    avtivationSynergyLv = i
+                    break
+                }
+            }
+            synergyKeySort.push([avtivationSynergyLv,synergyTab[synergyKey[j]],synergyKey[j]])
+        }        
+        if(Object.keys(jobSynergyData).includes(synergyKey[j])){
+            for(let i = 0; i < Object.keys(jobSynergyData[synergyKey[j]]).length; i++){                  
+                if(i === Object.keys(jobSynergyData[synergyKey[j]]).length -1){
+                    avtivationSynergyLv = i
+                    break
+                }
+                if(synergyTab[synergyKey[j]] < Object.keys(jobSynergyData[synergyKey[j]])[i]){
+                    avtivationSynergyLv = i
+                    break
+                }
+            }
+                synergyKeySort.push([avtivationSynergyLv,synergyTab[synergyKey[j]],synergyKey[j]])
+        }
+    }
+    synergyKeySort.sort((prev, cur) => {  
+        if (prev[0] < cur[0]) return 1;
+        if (prev[0] > cur[0]) return -1;
+      });
+    const synergyKeys = []
+    for(let i = 0; i <synergyKeySort.length; i++){
+        synergyKeys.push(synergyKeySort[i][2])
+    }
+    synergyBox.replaceChildren()
+    let avtivationSynergy = {} 
+    for (let y = 0; y < synergyKeys.length; y++) {
+        if (synergyTab[synergyKeys[y]] === 0){
             continue
         }
-        const SynergyDiv = document.createElement('div')
-        SynergyDiv.className = 'synergyDiv'
-        SynergyDiv.id = SynergyKeys[y] + 'synergy'
-        let SynergyText = ''
-        if (SynergyTab[SynergyKeys[y]] !== 0)  
-            SynergyText = SynergyKeys[y] + ':' + SynergyTab[SynergyKeys[y]]
-        SynergyDiv.textContent = SynergyText
-        SynergyBox.appendChild(SynergyDiv)
+        const synergyDiv = document.createElement('div')
+        synergyDiv.className = 'synergyDiv'
+        const synergyTextDiv = document.createElement('div')
+        const synergyTextCountDiv = document.createElement('div')    
+        if (synergyTab[synergyKeys[y]] !== 0){
+            if(Object.keys(lineSynergyData).includes(synergyKeys[y])){
+                for(let i = 0; i < Object.keys(lineSynergyData[synergyKeys[y]]).length; i++){                    
+                    if(i === Object.keys(lineSynergyData[synergyKeys[y]]).length -1){
+                        synergyTextDiv.textContent = synergyKeys[y]
+                        avtivationSynergy[synergyKeys[y]] = i
+                        synergyTextCountDiv.textContent = synergyTab[synergyKeys[y]] + '/' + Object.keys(lineSynergyData[synergyKeys[y]])[i]
+                        break
+                    }
+                    if(synergyTab[synergyKeys[y]] < Object.keys(lineSynergyData[synergyKeys[y]])[i]){
+                        synergyTextDiv.textContent = synergyKeys[y]
+                        avtivationSynergy[synergyKeys[y]] = i
+                        synergyTextCountDiv.textContent = synergyTab[synergyKeys[y]] + '/' + Object.keys(lineSynergyData[synergyKeys[y]])[i]
+                        break
+                    }
+                }
+                const textDiv = document.createElement('div')
+                const synergyBoxImgDiv = document.createElement('div')
+                const img = new Image()
+                img.classList = 'synergyBoxImg'
+                if(avtivationSynergy[synergyKeys[y]] == 1){
+                    img.style.backgroundColor = 'rgba(207,124,71)'
+                    img.style.opacity = 1
+                }
+                if(avtivationSynergy[synergyKeys[y]] == 2){
+                    img.style.backgroundColor = 'rgba(173,199,201)'
+                    img.style.opacity = 1
+                }
+                if(avtivationSynergy[synergyKeys[y]] == 3){
+                    img.style.backgroundColor = 'rgba(242,219,130)'
+                    img.style.opacity = 1
+                }
+                img.src = 'tft-trait/Trait_Icon_9_' + lineBoxEnglish[synergyKeys[y]] + '.TFT_Set9.png'     
+                synergyBoxImgDiv.appendChild(img)
+                textDiv.appendChild(synergyTextDiv)   
+                textDiv.appendChild(synergyTextCountDiv)
+                synergyDiv.appendChild(synergyBoxImgDiv)
+                synergyDiv.append(textDiv)
+                synergyBox.appendChild(synergyDiv)
+            }
+   
+            if(Object.keys(jobSynergyData).includes(synergyKeys[y])){
+                for(let i = 0; i < Object.keys(jobSynergyData[synergyKeys[y]]).length; i++){
+                    if(i === Object.keys(jobSynergyData[synergyKeys[y]]).length -1){
+                        synergyTextDiv.textContent = synergyKeys[y]
+                        avtivationSynergy[synergyKeys[y]] = i
+                        synergyTextCountDiv.textContent = synergyTab[synergyKeys[y]] + '/' + Object.keys(jobSynergyData[synergyKeys[y]])[i]
+                        break
+                    }
+                    if(synergyTab[synergyKeys[y]] < Object.keys(jobSynergyData[synergyKeys[y]])[i]){
+                        synergyTextDiv.textContent = synergyKeys[y]
+                        avtivationSynergy[synergyKeys[y]] = i
+                        synergyTextCountDiv.textContent = synergyTab[synergyKeys[y]] + '/' + Object.keys(jobSynergyData[synergyKeys[y]])[i]
+                        break
+                    }
+                }
+                const textDiv = document.createElement('div')
+                const synergyBoxImgDiv = document.createElement('div')
+                const img = new Image()
+                img.classList = 'synergyBoxImg'
+                switch(avtivationSynergy[synergyKeys[y]]){
+                    case 1:
+                        img.style.backgroundColor = 'rgba(207,124,71)'
+                        img.style.opacity = 1
+                    case 2:
+                        img.style.backgroundColor = 'rgba(242,219,130)'
+                        img.style.opacity = 1
+                    case 3:
+                        console.log(avtivationSynergy[synergyKeys[y]])
+                        img.style.backgroundColor = 'rgba(193,251,197)'
+                        img.style.opacity = 1
+                    img.src = 'tft-trait/Trait_Icon_9_' + jobBoxEnglish[synergyKeys[y]] + '.TFT_Set9.png'     
+                    synergyBoxImgDiv.appendChild(img)
+                    textDiv.appendChild(synergyTextDiv)   
+                    textDiv.appendChild(synergyTextCountDiv)
+                    synergyDiv.appendChild(synergyBoxImgDiv)
+                    synergyDiv.append(textDiv)
+                    synergyBox.appendChild(synergyDiv)
+                    }
+                img.src = 'tft-trait/Trait_Icon_9_' + jobBoxEnglish[synergyKeys[y]] + '.TFT_Set9.png'     
+                synergyBoxImgDiv.appendChild(img)
+                textDiv.appendChild(synergyTextDiv)   
+                textDiv.appendChild(synergyTextCountDiv)
+                synergyDiv.appendChild(synergyBoxImgDiv)
+                synergyDiv.append(textDiv)
+                synergyBox.appendChild(synergyDiv)
+            }
+        }
+    
+
         const synergyExplanationBox = document.createElement('div')
-        SynergyDiv.addEventListener('mouseenter', () => {
-            let rect = SynergyDiv.getBoundingClientRect();
-            let height = rect.y - 57
+        synergyDiv.addEventListener('mouseenter', () => {
+            let rect = synergyDiv.getBoundingClientRect();
+            let height = rect.y + 57
             let text = ''
-            if(Object.keys(lineBoxEnglish).includes(SynergyKeys[y])){
-                const synergyExplanationBoxId = SynergyKeys[y] + 'synergyExplanationBox'
+            if(Object.keys(lineBoxEnglish).includes(synergyKeys[y])){
+                const synergyExplanationBoxId = synergyKeys[y] + 'synergyExplanationBox'
                 synergyExplanationBox.id = synergyExplanationBoxId
                 synergyExplanationBox.className = 'synergyExplanation'
-                text = lineSynergyEffect[SynergyKeys[y]] +'\n'
-                for(const synergyObjectKey of Object.keys(lineSynergyData[SynergyKeys[y]])){
-                    text = text + '(' + synergyObjectKey + ')' + lineSynergyData[SynergyKeys[y]][synergyObjectKey] + '\n'    
+                text = lineSynergyEffect[synergyKeys[y]] +'\n'
+                for(const synergyObjectKey of Object.keys(lineSynergyData[synergyKeys[y]])){
+                    text = text + '(' + synergyObjectKey + ')' + lineSynergyData[synergyKeys[y]][synergyObjectKey] + '\n'    
                 }
                 synergyExplanationBox.textContent = text;
                 synergyExplanationBox.style.top = height;
-                SynergyBox.appendChild(synergyExplanationBox)
+                synergyBox.appendChild(synergyExplanationBox)
 
             }
-            if(Object.keys(jobBoxEnglish).includes(SynergyKeys[y])){
-                const synergyExplanationBoxId = SynergyKeys[y] + 'synergyExplanationBox'
+            if(Object.keys(jobBoxEnglish).includes(synergyKeys[y])){
+                const synergyExplanationBoxId = synergyKeys[y] + 'synergyExplanationBox'
                 synergyExplanationBox.id = synergyExplanationBoxId
                 synergyExplanationBox.className = 'synergyExplanation'
-                text = jobSynergyEffect[SynergyKeys[y]] +'\n'
-                for(const synergyObjectKey of Object.keys(jobSynergyData[SynergyKeys[y]])){
-                    text = text + '(' + synergyObjectKey + ')' +jobSynergyData[SynergyKeys[y]][synergyObjectKey] + '\n'    
+                text = jobSynergyEffect[synergyKeys[y]] +'\n'
+                for(const synergyObjectKey of Object.keys(jobSynergyData[synergyKeys[y]])){
+                    text = text + '(' + synergyObjectKey + ')' +jobSynergyData[synergyKeys[y]][synergyObjectKey] + '\n'    
                 }
                 synergyExplanationBox.textContent = text;
                 synergyExplanationBox.style.top = height;
-                SynergyBox.appendChild(synergyExplanationBox)
+                synergyBox.appendChild(synergyExplanationBox)
             }
         });
-        SynergyDiv.addEventListener('mouseleave', () => {
-            SynergyBox.removeChild(synergyExplanationBox)
+        synergyDiv.addEventListener('mouseleave', () => {
+            synergyBox.removeChild(synergyExplanationBox)
 
         });
     }

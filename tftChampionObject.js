@@ -119,6 +119,13 @@ const championList = [
     job: ['요새']
 },
 {
+    name: 'Samira',
+    koreanName: '사미라',
+    cost: 1,
+    line: ['녹서스'],
+    job: ['도전자']
+},
+{
     name: 'Sion',
     koreanName: '사이온',
     cost: 5,
