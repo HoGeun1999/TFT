@@ -174,3 +174,52 @@ body{
     margin-right: 10px;
     opacity: 0.3;
 }
+
+.activationLevel0{
+    background-color: black;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    opacity: 0.3;
+}
+
+
+.activationLevel1{
+    background-color: rgba(232,138,82);
+    height: 30px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    opacity: 1;
+}
+
+.activationLevel2{
+    background-color: rgba(183,209,212);
+    height: 30px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    opacity: 1;
+}
+
+.activationLevel3{
+    background-color: rgba(252,225,123);
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    opacity: 1;
+}
+
+.activationLevel4{
+    background-color: rgb(205,254,241);
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    opacity: 1;
+}
