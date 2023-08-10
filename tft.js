@@ -178,11 +178,34 @@ function updateSynergyText(synergyData,synergyTab,key,SynergyEffect,synergyKeySo
                 const synergyExplanationBoxId = key + 'synergyExplanationBox'
                 synergyExplanationBox.id = synergyExplanationBoxId
                 synergyExplanationBox.className = 'synergyExplanation'
+                const synergyEffectText = document.createElement('div')
                 text = SynergyEffect[key] +'\n'
-                for(const count of synergyCount){
-                    text = text + '(' + count + ')' + synergyData[key][synergyCountKey][count] + '\n'    
+                synergyEffectText.textContent = text
+                synergyExplanationBox.appendChild(synergyEffectText)
+                let check = 0
+                let activateSynergyNum = 0
+                for(const count of synergyCount.reverse()){
+                    if( synergyTab[key] >= count){
+                        activateSynergyNum = count
+                        break
+                    }
                 }
-                synergyExplanationBox.textContent = text;
+                for(const count of synergyCount.reverse()){
+                    let synergyText = ''
+                    const textDiv = document.createElement('div')
+                    if( activateSynergyNum === count){
+                        synergyText =  '(' + count + ')' + synergyData[key][synergyCountKey][count] + '\n'
+                        textDiv.textContent = synergyText;
+                        textDiv.className = 'activateSynergy'
+                        synergyExplanationBox.appendChild(textDiv)
+                    }
+                    else{
+                        synergyText =  '(' + count + ')' + synergyData[key][synergyCountKey][count] + '\n'    
+                        textDiv.textContent = synergyText;
+                        textDiv.className = 'disabledSynergy'
+                        synergyExplanationBox.appendChild(textDiv)
+                    }
+                }
                 synergyExplanationBox.style.top = height;
                 synergyBox.appendChild(synergyExplanationBox)
                 
@@ -190,6 +213,7 @@ function updateSynergyText(synergyData,synergyTab,key,SynergyEffect,synergyKeySo
         });
         synergyDiv.addEventListener('mouseleave', () => {
             synergyBox.removeChild(synergyExplanationBox)
+            synergyExplanationBox.replaceChildren()
         });
 }
 

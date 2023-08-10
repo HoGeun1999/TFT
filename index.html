@@ -11,32 +11,40 @@
 <body>
     <div id='wrap'>
         <div id='arrangementBoxWrap'>
-            <h3>배치칸</h3>
+            <h3 id = 'arrangementBoxTitle'>배치칸</h3>
             <div id='arrangementBox'>
             </div>
             <button id = 'clear'>초기화</button>
         </div>
-        <div id='SynergyBox'>
+        <div id='SynergyBoxWrap'>
+            <h3 id = 'SynergyBoxTitle'>시너지칸</h3>
+            <div id='SynergyBox'>
+            </div>
         </div>
         <div id='championBoxWrap'>
-            <button id='nameButton' class='tab'>
-                이름
-            </button>
-            <button id='costButton' class='tab'>
-                가격
-            </button>
-            <button id='lineButton' class='tab'>
-                계열
-            </button>
-            <button id='jobButton' class='tab'>
-                직업
-            </button>
-            <input id='search' placeholder="챔피언 입력">
+            <div id = 'buttonAndSearchWrap'>
+                <button id='nameButton' class='tab'>
+                    이름
+                </button>
+                <button id='costButton' class='tab'>
+                    가격
+                </button>
+                <button id='lineButton' class='tab'>
+                    계열
+                </button>
+                <button id='jobButton' class='tab'>
+                    직업
+                </button>
+                <input id='search' placeholder="챔피언 입력">
+            </div>
             <div id='championBox'>
 
             </div>
         </div>
-        <div id='recommendChampion'>
+        <div id='recommendChampionWrap'>
+            <h3 id = 'recommendChampionTitle'>추천 덱 리스트</h3>
+            <div id='recommendChampion'>
+            </div>
         </div>
     </div>
 

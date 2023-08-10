@@ -10,7 +10,7 @@ body{
     width: 1310px;
     height: 800px;
     grid-template-areas:
-        "arrangementBox SynergyBox"
+        "arrangementBox SynergyBoxWrap"
         "championBoxWrap recommendChampion";
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 710px 560px;
@@ -26,16 +26,42 @@ body{
     justify-self: start;
 }
 
+#SynergyBoxWrap{
+    grid-area: SynergyBoxWrap;
+    justify-self: end;
+    position: relative;
+    margin-top: 0;
+}
+
+#SynergyBoxTitle{
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+#arrangementBoxTitle{
+    margin-bottom: 5px;
+}
+
+#recommendChampionTitle{
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+#recommendChampionWrap{
+    margin-bottom: 5px;    
+}
+
+#buttonAndSearchWrap{
+    margin-bottom: 3px;
+}
+
 #SynergyBox {
-    grid-area: SynergyBox;
     border: 1px solid black;
     height: 300px;
     width: 400px;
     overflow-x: hidden;
-    justify-self: end;
-    position: relative;
-}
 
+}
 
 #championBoxWrap {
     grid-area: championBoxWrap;
@@ -140,6 +166,9 @@ body{
     padding: 10px;
 }
 
+.disabledSynergy{
+    opacity: 0.5;
+}
 
 .championWrap{
     border: 1px solid black;
