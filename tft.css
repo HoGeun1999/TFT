@@ -1,6 +1,7 @@
 body{
     display: flex;
     justify-content: center;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 
@@ -21,7 +22,7 @@ body{
     border: 1px solid black;
     height: 300px;
     width: 700px;
-    overflow: scroll hidden;
+    overflow-x: hidden;
     justify-self: start;
 }
 
@@ -30,7 +31,7 @@ body{
     border: 1px solid black;
     height: 300px;
     width: 400px;
-    overflow: scroll;
+    overflow-x: hidden;
     justify-self: end;
     position: relative;
 }
@@ -45,7 +46,7 @@ body{
     border: 1px solid black;
     height: 300px;
     width: 550px;
-    overflow: scroll;
+    overflow-x: hidden;;
     
     
 }
@@ -56,7 +57,7 @@ body{
     height: 300px;
     width: 550px;
     justify-self: end;
-    overflow: scroll;
+    overflow-x: hidden;
 }
 
 .tab {
@@ -73,11 +74,12 @@ body{
 	top: 50%;
 	left: 50%;
 	transform: translate( -52%, 20% );
-    font-weight: 600;
+    font-weight: 500;
     color: white;
-    font-size: 11px;
+    font-size: 12px;
     width: 60px;
     height: 45px;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
 .clone {
@@ -118,6 +120,10 @@ body{
     align-items: center;
 }
 
+.synergyDiv:hover {
+    background-color: bisque;
+}
+
 .synergyExplanation{
     border: 1px solid black;
     height: 150px;
@@ -144,7 +150,12 @@ body{
     margin: 5px 5px 5px 5px;
     display: inline-table;
     position: relative;
+    cursor: pointer;
 
+}
+
+.championWrap:hover{
+    opacity: 0.8;
 }
 
 .championImg{

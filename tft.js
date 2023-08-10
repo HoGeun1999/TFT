@@ -25,11 +25,7 @@ function SynergyTabCheckReset(){
 
 function searchChampionBox(){   
     searchInputText = document.getElementById('search').value;
-    if(selectedChampionButton === 'nameButton'){
-        championBox.replaceChildren()
-        renderChampionBoxUI()
-    }
-    else if(selectedChampionButton === 'costButton'){
+    if(selectedChampionButton === 'nameButton' || selectedChampionButton === 'costButton'){
         championBox.replaceChildren()
         renderChampionBoxUI()
     }
@@ -118,12 +114,12 @@ function updateAtivationLevel(synergyData,key,synergyKeySort,synergyTab){
         for(let i = 0; i < Object.keys(synergyData[key][synergyDatakey[0]]).length; i++){                 
             if(synergyTab[key] < Object.keys(synergyData[key][synergyDatakey[0]])[i]){
                 avtivationSynergyLevel = Object.keys(synergyData[key][synergyDatakey[1]])[i]
-                console.log(i)
+
                 break
             }
+            
             if(i === Object.keys(synergyData[key][synergyDatakey[0]]).length -1){
-                avtivationSynergyLevel = synergyData[key][synergyDatakey[1]][i]
-                console.log(i)
+
                 break
             }
         }
@@ -189,7 +185,7 @@ function updateSynergyText(synergyData,synergyTab,key,SynergyEffect,synergyKeySo
                 synergyExplanationBox.textContent = text;
                 synergyExplanationBox.style.top = height;
                 synergyBox.appendChild(synergyExplanationBox)
-
+                
             }
         });
         synergyDiv.addEventListener('mouseleave', () => {
@@ -249,12 +245,14 @@ function renderrecommendBoxUI(arrangementData){
             recommendBox.appendChild(recommendDeckName)
             for(const champion of deck[i].deckList){
                 if(arrangementChampion.includes(champion)){
-                    const championImgDiv = championImgDivMake(championDic[champion])
+                    const championImgDiv = MakechampionImgDiv(championDic[champion])
+                    championImgDiv.addEventListener('click',onClickChampionBoxChampion(championDic[champion]))
                     recommendDeckName.appendChild(championImgDiv)
                     recommendBox.appendChild(championImgDiv)
                 }
                 else{
-                    const championImgDiv = championImgDivMake(championDic[champion])
+                    const championImgDiv = MakechampionImgDiv(championDic[champion])
+                    championImgDiv.addEventListener('click',onClickChampionBoxChampion(championDic[champion]))
                     recommendDeckName.appendChild(championImgDiv)
                     recommendBox.appendChild(championImgDiv)
                     championImgDiv.style.opacity = 0.5;
@@ -264,7 +262,7 @@ function renderrecommendBoxUI(arrangementData){
     }
 }
 
-function championImgDivMake(champion){
+function MakechampionImgDiv(champion){
     const championWrap = document.createElement('div')
     championWrap.className = 'championWrap'
     const ChampionImg = document.createElement('div')
@@ -289,7 +287,7 @@ function renderChampionBoxUI() {
         }
     }
     for (let i = 0; i < searchInputTextFilterChampion.length; i++) {
-        const championWrap = championImgDivMake(searchInputTextFilterChampion[i])
+        const championWrap = MakechampionImgDiv(searchInputTextFilterChampion[i])
         championWrap.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
         championBox.appendChild(championWrap);
     }
@@ -375,7 +373,7 @@ function renderChampionBoxLineUI() {
 
     for (let i = 0; i < searchInputTextFilterChampion.length; i++) {
         for (let j = 0; j < searchInputTextFilterChampion[i].line.length; j++) {
-            const championWrap = championImgDivMake(searchInputTextFilterChampion[i])
+            const championWrap = MakechampionImgDiv(searchInputTextFilterChampion[i])
             championWrap.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i])) 
             const lineTabDiv = document.getElementById(searchInputTextFilterChampion[i].line[j])
             lineTabDiv.appendChild(championWrap);
@@ -420,7 +418,7 @@ function renderChampionBoxJobUI() {
 
     for (let i = 0; i < searchInputTextFilterChampion.length; i++) {
         for (let j = 0; j < searchInputTextFilterChampion[i].job.length; j++) {
-            const championWrap = championImgDivMake(searchInputTextFilterChampion[i])
+            const championWrap = MakechampionImgDiv(searchInputTextFilterChampion[i])
             championWrap.addEventListener("click", onClickChampionBoxChampion(searchInputTextFilterChampion[i]))
             const jobTabDiv = document.getElementById(searchInputTextFilterChampion[i].job[j])
             jobTabDiv.appendChild(championWrap);
